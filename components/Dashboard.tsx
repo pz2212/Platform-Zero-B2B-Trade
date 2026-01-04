@@ -276,11 +276,11 @@ const LiveActivitySnapshot = ({ stats, onCardClick }: any) => {
                 { id: 'DELIVERIES', label: 'On the Road', value: stats.deliveriesOnRoad || 0, icon: Truck, bg: 'bg-emerald-50', color: 'text-emerald-500' },
                 { id: 'REVENUE', label: 'Revenue', value: stats.myRevenueToday >= 1000 ? (stats.myRevenueToday / 1000).toFixed(1) + 'k' : stats.myRevenueToday?.toLocaleString() || '0', icon: DollarSign, bg: 'bg-emerald-50', color: 'text-emerald-500', isCurrency: true }
             ].map(kpi => (
-                <button key={kpi.id} onClick={() => onCardClick(kpi.id)} className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all aspect-square md:aspect-auto md:h-40 text-left active:scale-[0.98]">
-                    <div><p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">{kpi.label}</p></div>
+                <button key={kpi.id} onClick={() => onCardClick(kpi.id)} className="bg-white p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all h-32 sm:h-40 text-left active:scale-[0.98]">
+                    <div><p className="text-[8px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-0.5 sm:mb-1">{kpi.label}</p></div>
                     <div className="flex justify-between items-end">
-                        <h3 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tighter">{kpi.isCurrency ? `$${kpi.value}` : kpi.value}</h3>
-                        <div className={`p-2 md:p-3 ${kpi.bg} ${kpi.color} rounded-xl group-hover:scale-110 transition-transform`}><kpi.icon size={18} /></div>
+                        <h3 className="text-xl sm:text-3xl font-black text-gray-900 tracking-tighter">{kpi.isCurrency ? `$${kpi.value}` : kpi.value}</h3>
+                        <div className={`p-2 sm:p-3 ${kpi.bg} ${kpi.color} rounded-xl group-hover:scale-110 transition-transform shadow-inner-sm`}><kpi.icon size={16} className="sm:w-5 sm:h-5" /></div>
                     </div>
                 </button>
             ))}

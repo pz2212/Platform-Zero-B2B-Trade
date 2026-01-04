@@ -295,7 +295,7 @@ const AppLayout = ({ children, user, onLogout }: any) => {
                   </button>
 
                   {isMobileMenuOpen && (
-                    <div className="absolute right-0 top-14 w-[260px] bg-white rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-gray-100 py-4 px-3 z-[60] animate-in zoom-in-95 slide-in-from-top-2 duration-200">
+                    <div className="absolute right-0 top-14 w-[260px] max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar bg-white rounded-3xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-gray-100 py-4 px-3 z-[60] animate-in zoom-in-95 slide-in-from-top-2 duration-200">
                         <div className="px-4 py-2 mb-4 border-b border-gray-50">
                             <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">Account</p>
                             <p className="font-black text-gray-900 uppercase truncate text-xs">{user?.businessName}</p>
@@ -307,7 +307,6 @@ const AppLayout = ({ children, user, onLogout }: any) => {
 
                         <div className="mt-4 pt-4 border-t border-gray-100 space-y-1">
                             <SidebarLink to="/settings" icon={Settings} label="Settings" active={isActive('/settings')} />
-                            {/* changed onLogout prop to onClick for React button element */}
                             <button onClick={onLogout} className="w-full flex items-center justify-between px-4 py-3.5 text-red-600 hover:bg-red-50 rounded-xl text-sm font-black transition-all uppercase">
                                 <div className="flex items-center gap-3">
                                   <LogOut size={20} />

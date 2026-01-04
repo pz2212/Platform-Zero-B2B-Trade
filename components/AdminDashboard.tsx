@@ -10,7 +10,6 @@ import {
   UserCheck, AlertTriangle, Wallet, BarChart3, TrendingDown, Info, Loader2,
   Filter, ArrowLeft, Receipt, ChevronUp, History, ClipboardList, Truck,
   MapPin, Calendar, CheckCircle2, Timer, Briefcase, UserCog,
-  // Fix: Added missing Sprout import from lucide-react
   Sprout
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -582,35 +581,35 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* KPI METRICS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* KPI METRICS - Updated for 2 columns on mobile */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {[
             { id: 'ORDERS', label: 'Orders Today', value: stats.ordersToday, icon: Activity, color: 'text-blue-600', bg: 'bg-blue-50', live: true, desc: 'Incoming live volume' },
             { id: 'WHOLESALERS', label: 'Live Wholesalers', value: stats.wholesalers, icon: Globe, color: 'text-indigo-600', bg: 'bg-indigo-50', live: true, desc: 'Active network nodes' },
-            { id: 'REVENUE', label: 'Market Revenue', value: `$${stats.gmv.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50', desc: 'Total platform GMV' },
-            { id: 'IMPACT', label: 'Ecological Impact', value: `${stats.wasteDiverted.toLocaleString()}kg`, icon: Leaf, color: 'text-emerald-500', bg: 'bg-emerald-50', live: true, desc: 'Waste diverted to buyers' }
+            { id: 'REVENUE', label: 'Market Revenue', value: `$${stats.gmv >= 1000 ? (stats.gmv / 1000).toFixed(1) + 'k' : stats.gmv.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50', desc: 'Total platform GMV' },
+            { id: 'IMPACT', label: 'Eco Impact', value: `${stats.wasteDiverted >= 1000 ? (stats.wasteDiverted / 1000).toFixed(1) + 'k' : stats.wasteDiverted.toLocaleString()}kg`, icon: Leaf, color: 'text-emerald-500', bg: 'bg-emerald-50', live: true, desc: 'Waste diverted to buyers' }
         ].map((kpi, idx) => (
             <button 
               key={idx} 
               onClick={() => handleKpiClick(kpi.id)}
-              className={`text-left bg-white p-8 rounded-[2rem] shadow-sm border flex flex-col justify-between group hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden active:scale-[0.98] ${activeDrillDown === kpi.id && !drillDownCustomerId ? 'border-indigo-400 ring-2 ring-indigo-50 shadow-lg' : 'border-gray-100'}`}
+              className={`text-left bg-white p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-sm border flex flex-col justify-between group hover:shadow-xl transition-all relative overflow-hidden active:scale-[0.98] ${activeDrillDown === kpi.id && !drillDownCustomerId ? 'border-indigo-400 ring-2 ring-indigo-50 shadow-lg' : 'border-gray-100'}`}
             >
                 {kpi.live && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5">
-                        <span className="relative flex h-2 w-2">
+                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center gap-1.5">
+                        <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-emerald-500"></span>
                         </span>
-                        <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Live</span>
+                        <span className="text-[7px] sm:text-[8px] font-black text-emerald-600 uppercase tracking-widest">Live</span>
                     </div>
                 )}
                 <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">{kpi.label}</p>
-                    <p className="text-[9px] font-bold text-gray-300 uppercase tracking-tight mb-6">{kpi.desc}</p>
+                    <p className="text-[8px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-0.5 sm:mb-1">{kpi.label}</p>
+                    <p className="text-[7px] sm:text-[9px] font-bold text-gray-300 uppercase tracking-tight mb-4 sm:mb-6 hidden xs:block">{kpi.desc}</p>
                 </div>
                 <div className="flex justify-between items-end">
-                    <h3 className="text-3xl font-black text-gray-900 tracking-tighter">{kpi.value}</h3>
-                    <div className={`p-3 ${kpi.bg} ${kpi.color} rounded-2xl group-hover:scale-110 transition-transform shadow-inner-sm border border-white/50`}><kpi.icon size={24} /></div>
+                    <h3 className="text-xl sm:text-3xl font-black text-gray-900 tracking-tighter">{kpi.value}</h3>
+                    <div className={`p-2 sm:p-3 ${kpi.bg} ${kpi.color} rounded-xl group-hover:scale-110 transition-transform shadow-inner-sm border border-white/50`}><kpi.icon size={16} className="sm:w-6 sm:h-6" /></div>
                 </div>
             </button>
         ))}
@@ -820,3 +819,7 @@ export const AdminDashboard: React.FC = () => {
     </div>
   );
 };
+
+const Info = ({ size = 24, ...props }: any) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+);
