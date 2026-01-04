@@ -1,6 +1,6 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, ScanLine, CheckCircle, Send, MessageSquare, AlertCircle, Loader2, Image as ImageIcon, FolderOpen, X, Store, MapPin, Share2, Heart, Edit2, ChevronDown, Package, Plus, Sparkles } from 'lucide-react';
+/* Added missing DollarSign import from lucide-react */
+import { Camera, Upload, ScanLine, CheckCircle, Send, MessageSquare, AlertCircle, Loader2, Image as ImageIcon, FolderOpen, X, Store, MapPin, Share2, Heart, Edit2, ChevronDown, Package, Plus, Sparkles, DollarSign } from 'lucide-react';
 import { mockService } from '../services/mockDataService';
 import { identifyProductFromImage } from '../services/geminiService';
 import { Customer, User, InventoryItem, Product } from '../types';
@@ -39,6 +39,7 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setProducts(mockService.getAllProducts());
@@ -52,8 +53,6 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showSourceMenu]);
-
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -121,7 +120,6 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
         discountPricePerKg: price || undefined
     };
 
-    // Simulate save delay
     await new Promise(r => setTimeout(r, 1000));
     mockService.addInventoryItem(newItem);
     if (price > 0) {
@@ -179,22 +177,22 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-end px-2">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+          <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
               <ScanLine className="text-indigo-600" size={32}/> AI Opportunity Matcher
           </h1>
-          <p className="text-gray-500 mt-1 font-medium">Snap or upload produce to instantly notify active buyers.</p>
+          <p className="text-gray-500 mt-1 font-medium text-sm md:text-base">Snap or upload produce to instantly notify active buyers.</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
         <div className="space-y-6">
             <div 
                 onDragOver={onDragOver}
                 onDrop={onDrop}
                 onClick={() => !image && setShowSourceMenu(true)}
-                className={`border-2 border-dashed rounded-[2rem] h-96 flex flex-col items-center justify-center cursor-pointer transition-all relative overflow-hidden bg-white shadow-inner-sm ${image ? 'border-indigo-100 shadow-none' : 'border-gray-200 hover:border-indigo-400 hover:bg-gray-50/50'}`}
+                className={`border-2 border-dashed rounded-[2.5rem] h-64 md:h-96 flex flex-col items-center justify-center cursor-pointer transition-all relative overflow-hidden bg-white shadow-inner-sm ${image ? 'border-indigo-100 shadow-none' : 'border-gray-200 hover:border-indigo-400 hover:bg-gray-50/50'}`}
             >
                 <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
                 <input type="file" ref={cameraInputRef} className="hidden" accept="image/*" capture="environment" onChange={handleFileChange} />
@@ -211,11 +209,11 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                     </>
                 ) : (
                     <div className="text-center p-8 animate-in fade-in zoom-in duration-300">
-                        <div className="bg-indigo-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-indigo-600 shadow-sm">
+                        <div className="bg-indigo-50 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-indigo-600 shadow-sm">
                             <Camera size={40} strokeWidth={2.5}/>
                         </div>
-                        <h3 className="text-2xl font-black text-gray-900 mb-2">Upload Product Photo</h3>
-                        <p className="text-gray-500 font-medium">Click or drag and drop to identify</p>
+                        <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-2 uppercase tracking-tight">Upload Photo</h3>
+                        <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Identify & List Instant</p>
                     </div>
                 )}
                 
@@ -248,7 +246,7 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
             </div>
 
             {analysisResult && (
-                <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-emerald-100 animate-in slide-in-from-left-4 duration-500">
+                <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-emerald-100 animate-in slide-in-from-left-4 duration-500">
                     <div className="flex justify-between items-start mb-6">
                         <div className="flex items-center gap-4">
                             <div className="bg-emerald-100 p-3 rounded-2xl text-emerald-600 shadow-inner-sm">
@@ -271,34 +269,33 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                                     </div>
                                 ) : (
                                     <div className="group cursor-pointer flex items-center gap-2" onClick={() => setIsEditingName(true)}>
-                                        <h3 className="font-black text-gray-900 text-2xl tracking-tight leading-none">{analysisResult.name}</h3>
+                                        <h3 className="font-black text-gray-900 text-xl md:text-2xl tracking-tight leading-none uppercase">{analysisResult.name}</h3>
                                         <Edit2 size={16} className="text-gray-300 group-hover:text-indigo-500 transition-colors" />
                                     </div>
                                 )}
-                                <p className="text-xs font-black text-emerald-600 uppercase tracking-widest mt-1.5">Identified by Platform Zero AI</p>
+                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-1.5">Identified by Platform Zero AI</p>
                             </div>
                         </div>
                         <div className="flex gap-2">
                              <button 
-                                onClick={handleAddToInventory}
-                                className={`p-3 rounded-full transition-all active:scale-95 shadow-md ${isSaved ? 'bg-red-500 text-white shadow-red-100' : 'bg-white border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200'}`}
-                                title="Quick Add to My Inventory"
+                                onClick={() => setIsShareOpen(true)}
+                                className="p-3 bg-white border border-gray-200 text-gray-400 rounded-full hover:text-indigo-600 hover:border-indigo-100 transition-all active:scale-95"
                              >
-                                <Heart size={24} fill={isSaved ? "currentColor" : "none"} strokeWidth={isSaved ? 0 : 2}/>
+                                <Share2 size={24}/>
                              </button>
                         </div>
                     </div>
                     
-                    <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50 mb-8">
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block mb-1">Quality Assessment</span>
-                        <p className="text-emerald-900 font-bold text-lg">"{analysisResult.quality}"</p>
+                    <div className="bg-emerald-50/50 p-5 rounded-[1.5rem] border border-emerald-100/50 mb-8">
+                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest block mb-2">Quality Assessment</span>
+                        <p className="text-emerald-900 font-black text-base md:text-lg leading-tight uppercase">"{analysisResult.quality}"</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">YOUR PRICE ($/KG)</label>
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">SET YOUR PRICE ($/KG)</label>
                             <div className="relative group">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-black text-xl">$</span>
+                                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-black text-lg"/>
                                 <input 
                                     type="number" 
                                     className="w-full pl-10 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-black text-2xl text-gray-900 transition-all shadow-inner-sm"
@@ -309,12 +306,12 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">QUANTITY (KG)</label>
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">TOTAL QUANTITY (KG)</label>
                             <div className="relative group">
-                                <Package className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
+                                <Package className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20}/>
                                 <input 
                                     type="number" 
-                                    className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-black text-2xl text-gray-900 transition-all shadow-inner-sm"
+                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-black text-2xl text-gray-900 transition-all shadow-inner-sm"
                                     placeholder="100"
                                     value={quantity || ''}
                                     onChange={(e) => setQuantity(parseFloat(e.target.value))}
@@ -329,7 +326,7 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                         className={`w-full py-5 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[11px] shadow-xl transition-all flex items-center justify-center gap-3 active:scale-[0.98] ${isSaved ? 'bg-emerald-600 text-white' : 'bg-[#0F172A] text-white hover:bg-black'}`}
                     >
                         {isAddingInventory ? (
-                            <><Loader2 className="animate-spin" size={18}/> Committing to Ledger...</>
+                            <><Loader2 size={18} className="animate-spin"/> Committing to Ledger...</>
                         ) : isSaved ? (
                             <><CheckCircle size={18}/> Added to Inventory</>
                         ) : (
@@ -340,8 +337,8 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
             )}
         </div>
 
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 flex flex-col h-[700px] overflow-hidden">
-            <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
+        <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col h-[500px] md:h-[700px] overflow-hidden">
+            <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center shrink-0">
                 <div>
                     <h2 className="text-xl font-black text-gray-900 tracking-tight uppercase">Buyer Opportunities</h2>
                     <p className="text-sm text-gray-500 font-medium">
@@ -351,42 +348,32 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    {matchedBuyers.length > 0 && (
-                        <button 
-                            onClick={() => setIsShareOpen(true)}
-                            className="p-2.5 bg-white border-2 border-indigo-100 text-indigo-600 rounded-full hover:bg-indigo-50 hover:border-indigo-300 transition-all shadow-sm active:scale-95"
-                            title="Share with contacts"
-                        >
-                            <Share2 size={20} strokeWidth={2.5}/>
-                        </button>
-                    )}
                     {matchedBuyers.length > 0 && <div className="bg-emerald-100 text-emerald-700 w-8 h-8 rounded-full flex items-center justify-center font-black text-sm">{matchedBuyers.length}</div>}
                 </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
                 {matchedBuyers.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-gray-400 text-center p-8">
+                    <div className="h-full flex flex-col items-center justify-center text-gray-400 text-center p-8 opacity-40">
                         <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-                            <ScanLine size={40} className="opacity-20"/>
+                            <ScanLine size={40}/>
                         </div>
-                        <p className="font-bold text-lg text-gray-300">No matches yet.</p>
-                        <p className="text-sm max-w-[200px] mt-2">Active buyers looking for items will appear here after AI identification.</p>
+                        <p className="font-black uppercase tracking-widest text-xs">No active matches found</p>
                     </div>
                 ) : (
                     matchedBuyers.map(buyer => (
                         <div key={buyer.id} className="group border-2 border-gray-50 rounded-2xl p-5 hover:border-indigo-100 hover:bg-indigo-50/20 transition-all duration-300 shadow-sm hover:shadow-md">
                             <div className="flex justify-between items-start mb-2">
-                                <h3 className="font-black text-gray-900 text-lg tracking-tight group-hover:text-indigo-900">{buyer.businessName}</h3>
+                                <h3 className="font-black text-gray-900 text-lg tracking-tight group-hover:text-indigo-900 uppercase">{buyer.businessName}</h3>
                                 {buyer.connectionStatus === 'Active' ? (
                                     <span className="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded-lg font-black uppercase tracking-widest">Connected</span>
                                 ) : (
-                                    <span className="bg-gray-100 text-gray-400 text-[10px] px-2 py-0.5 rounded-lg font-black uppercase tracking-widest">Network lead</span>
+                                    <span className="bg-gray-100 text-gray-400 text-[10px] px-2 py-0.5 rounded-lg font-black uppercase tracking-widest">Lead</span>
                                 )}
                             </div>
-                            <div className="flex items-center gap-4 text-xs text-gray-500 mb-5 font-bold uppercase tracking-tight">
-                                <span className="flex items-center gap-1"><Store size={14}/> {buyer.category}</span>
-                                <span className="flex items-center gap-1"><MapPin size={14}/> {buyer.onboardingData?.deliveryAddress || 'Melbourne'}</span>
+                            <div className="flex items-center gap-4 text-[10px] text-gray-400 mb-5 font-black uppercase tracking-widest">
+                                <span className="flex items-center gap-1"><Store size={14} className="text-gray-300"/> {buyer.category}</span>
+                                <span className="flex items-center gap-1"><MapPin size={14} className="text-gray-300"/> {buyer.location || 'Melbourne'}</span>
                             </div>
                             
                             <div className="flex gap-2">
@@ -402,12 +389,6 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                                         <AlertCircle size={16}/> Intro Needed
                                     </button>
                                 )}
-                                <button 
-                                    onClick={() => setIsShareOpen(true)}
-                                    className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors shadow-sm"
-                                >
-                                    <Share2 size={18}/>
-                                </button>
                             </div>
                         </div>
                     ))
@@ -415,51 +396,4 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
             </div>
 
             {matchedBuyers.length > 0 && (
-                <div className="p-8 border-t border-gray-100 bg-gray-50">
-                    {offersSent ? (
-                        <div className="bg-[#043003] text-white p-5 rounded-2xl flex items-center justify-center gap-3 font-black uppercase tracking-[0.2em] text-sm animate-in zoom-in duration-300 shadow-xl">
-                            <CheckCircle size={24} className="text-emerald-400"/> Proposal Sent!
-                        </div>
-                    ) : (
-                        <button 
-                            onClick={handleSendOffers}
-                            disabled={!price || isSending}
-                            className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-sm shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-3 transition-all"
-                        >
-                            {isSending ? (
-                                <>
-                                    <Loader2 size={24} className="animate-spin"/> Dispatching...
-                                </>
-                            ) : (
-                                <>
-                                    <Send size={20} /> Bulk Propose to {matchedBuyers.length} Buyers
-                                </>
-                            )}
-                        </button>
-                    )}
-                </div>
-            )}
-        </div>
-      </div>
-
-      <ChatDialog 
-        isOpen={chatOpen}
-        onClose={() => setChatOpen(false)}
-        orderId="PROPOSAL-LIVE"
-        issueType={`${analysisResult?.name} @ $${price}/kg`}
-        repName={activeBuyerName}
-        imageUrl={image || undefined}
-      />
-
-      {isShareOpen && syntheticItem && (
-          <ShareModal 
-            item={syntheticItem}
-            onClose={() => setIsShareOpen(false)}
-            onComplete={() => setIsShareOpen(false)}
-            currentUser={user || {id: 'u2', name: ' Sarah Wholesaler', businessName: 'Fresh Wholesalers', role: 'WHOLESALER' as any, email: 'sarah@fresh.com'}}
-            overridePrice={price} // Pass the dynamic scanner price
-          />
-      )}
-    </div>
-  );
-};
+                <div className="p-8 border-t border-gray-10

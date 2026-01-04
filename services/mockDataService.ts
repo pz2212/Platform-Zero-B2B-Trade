@@ -4,7 +4,8 @@ import {
   SupplierPriceRequest, PricingRule,
   SupplierPriceRequestItem, AppNotification, ChatMessage, OrderItem,
   Driver, Packer, RegistrationRequest, OnboardingFormTemplate,
-  BusinessProfile, OrderIssue, Industry, ProductUnit, ProcurementRequest
+  BusinessProfile, OrderIssue, Industry, ProductUnit, ProcurementRequest,
+  Lead, LeadStatus
 } from '../types';
 import { triggerNativeSms } from './smsService';
 
@@ -80,6 +81,13 @@ const INITIAL_ORDERS: Order[] = [
     ], paymentStatus: 'Paid', source: 'Marketplace', deliveredAt: new Date(Date.now() - 43200000).toISOString() },
 ];
 
+const INITIAL_LEADS: Lead[] = [
+    { id: 'l1', businessName: 'Adelaide Hills Bistro', contactName: 'Chef Simon', location: 'Crafers, SA', source: 'AI_SCAN', status: 'DISCOVERY', estimatedMonthlyValue: 4500, lastActivityDate: new Date().toISOString(), assignedRepId: 'r1', phone: '0499 111 222', email: 'simon@hillsbistro.au' },
+    { id: 'l2', businessName: 'City Central Catering', contactName: 'Julia West', location: 'Adelaide CBD', source: 'MANUAL', status: 'ENGAGEMENT', estimatedMonthlyValue: 12000, lastActivityDate: new Date().toISOString(), assignedRepId: 'r1', phone: '0488 333 444' },
+    { id: 'l3', businessName: 'Organic Grocers Co', contactName: 'Marcus Wood', location: 'Norwood, SA', source: 'REFERRAL', status: 'PROPOSAL', estimatedMonthlyValue: 8000, lastActivityDate: new Date().toISOString(), assignedRepId: 'r1' },
+    { id: 'l4', businessName: 'The Salad Bar', contactName: 'Becky Sharp', location: 'Unley, SA', source: 'AI_SCAN', status: 'CLOSING', estimatedMonthlyValue: 3200, lastActivityDate: new Date().toISOString(), assignedRepId: 'r1' },
+];
+
 class MockDataService {
   private users: User[] = [...USERS_INITIAL];
   private portalInvites: PortalInvite[] = [];
@@ -107,6 +115,7 @@ class MockDataService {
   private chatMessages: ChatMessage[] = [];
   private drivers: Driver[] = [];
   private packers: Packer[] = [];
+  private leads: Lead[] = [...INITIAL_LEADS];
 
   constructor() {
     this.loadFromStorage();
@@ -130,7 +139,8 @@ class MockDataService {
       chatMessages: this.chatMessages,
       notifications: this.notifications,
       drivers: this.drivers,
-      packers: this.packers
+      packers: this.packers,
+      leads: this.leads
     };
     localStorage.setItem('pz_platform_data_v2', JSON.stringify(data));
   }
@@ -157,13 +167,31 @@ class MockDataService {
         this.notifications = data.notifications || this.notifications;
         this.drivers = data.drivers || this.drivers;
         this.packers = data.packers || this.packers;
+        this.leads = data.leads || this.leads;
       } catch (e) {
         console.error("Failed to load PZ mock data", e);
       }
     }
   }
 
-  /* Added missing methods to handle various application flows */
+  /* Lead Management Methods */
+  getLeads(repId: string) {
+      return this.leads.filter(l => l.assignedRepId === repId);
+  }
+
+  updateLeadStatus(leadId: string, status: LeadStatus) {
+      const lead = this.leads.find(l => l.id === leadId);
+      if (lead) {
+          lead.status = status;
+          lead.lastActivityDate = new Date().toISOString();
+          this.saveToStorage();
+      }
+  }
+
+  addLead(lead: Lead) {
+      this.leads.push(lead);
+      this.saveToStorage();
+  }
 
   generateLotId() {
     return 'LOT-' + Math.random().toString(36).substring(2, 6).toUpperCase();

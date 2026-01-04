@@ -1,13 +1,14 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { User, Customer, Order, OrderIssue, UserRole } from '../types';
+import { User, Customer, Order, Lead, LeadStatus, UserRole } from '../types';
 import { mockService } from '../services/mockDataService';
 import { 
   Users, AlertCircle, CheckCircle, MessageSquare, TrendingUp, 
   DollarSign, Clock, Calendar, ChevronRight, Filter, Search,
   Briefcase, ArrowUpRight, ShieldCheck, Wallet, Activity,
   Target, BarChart3, Star, Info, MessageCircle, X, Check,
-  Loader2, Gavel, LayoutGrid, FileWarning, Package, Store, MapPin, Image as ImageIcon, Download
+  Loader2, Gavel, LayoutGrid, FileWarning, Package, Store, MapPin, Image as ImageIcon, Download,
+  ArrowRight, Plus, Smartphone, Mail
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,13 +16,21 @@ interface RepDashboardProps {
   user: User;
 }
 
+const PIPELINE_STAGES: { id: LeadStatus, label: string, color: string }[] = [
+  { id: 'DISCOVERY', label: 'Discovery', color: 'bg-blue-500' },
+  { id: 'ENGAGEMENT', label: 'Engagement', color: 'bg-indigo-500' },
+  { id: 'PROPOSAL', label: 'Proposal', color: 'bg-purple-500' },
+  { id: 'CLOSING', label: 'Closing', color: 'bg-orange-500' },
+  { id: 'ONBOARDED', label: 'Onboarded', color: 'bg-emerald-500' }
+];
+
 export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'NETWORK' | 'COMMISSIONS' | 'DISPUTES'>('OVERVIEW');
+  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'PIPELINE' | 'NETWORK' | 'COMMISSIONS' | 'DISPUTES'>('OVERVIEW');
   const [assignedCustomers, setAssignedCustomers] = useState<Customer[]>([]);
   const [activeIssues, setActiveIssues] = useState<Order[]>([]);
-  /* Added missing state for active contact management */
   const [activeContact, setActiveContact] = useState<Customer | null>(null);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [stats, setStats] = useState<any>({
       totalSales: 0,
       commissionMade: 0,
@@ -42,6 +51,16 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
     setAssignedCustomers(customers);
     setActiveIssues(mockService.getRepIssues(user.id));
     setStats(mockService.getRepStats(user.id));
+    setLeads(mockService.getLeads(user.id));
+  };
+
+  const handleMoveLead = (leadId: string, currentStatus: LeadStatus) => {
+      const currentIndex = PIPELINE_STAGES.findIndex(s => s.id === currentStatus);
+      if (currentIndex < PIPELINE_STAGES.length - 1) {
+          const nextStatus = PIPELINE_STAGES[currentIndex + 1].id;
+          mockService.updateLeadStatus(leadId, nextStatus);
+          loadData();
+      }
   };
 
   const commissionLog = useMemo(() => {
@@ -110,9 +129,9 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
                           <Users size={18}/> Lead Pipeline
                       </div>
                       <div className="text-5xl font-black tracking-tighter mb-2 group-hover/card:scale-105 transition-transform origin-left">
-                          {stats.customerCount}
+                          {leads.length + stats.customerCount}
                       </div>
-                      <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">Marketplace Buyers Managed</div>
+                      <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">Opportunities Managed</div>
                   </div>
               </div>
           </div>
@@ -121,21 +140,90 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
       {/* WORKSPACE TABS */}
       <div className="bg-gray-100/50 p-2 rounded-[2.25rem] inline-flex border border-gray-200 shadow-inner-sm mx-2 overflow-x-auto no-scrollbar max-w-full">
           {[
-              { id: 'OVERVIEW', label: 'Consultant Workspace', icon: LayoutGrid },
+              { id: 'OVERVIEW', label: 'Intelligence', icon: LayoutGrid },
+              { id: 'PIPELINE', label: 'Sales Pipeline', icon: TrendingUp },
               { id: 'NETWORK', label: 'My Client Network', icon: Users },
-              { id: 'COMMISSIONS', label: 'Commission Ledger', icon: Wallet },
-              { id: 'DISPUTES', label: 'Client Disputes', icon: Gavel, badge: activeIssues.length }
+              { id: 'COMMISSIONS', label: 'Ledger', icon: Wallet },
+              { id: 'DISPUTES', label: 'Issues', icon: Gavel, badge: activeIssues.length }
           ].map(tab => (
               <button 
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`px-12 py-5 rounded-[1.75rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 whitespace-nowrap ${activeTab === tab.id ? 'bg-white text-[#043003] shadow-xl ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-700'}`}
+                  className={`px-10 py-5 rounded-[1.75rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 whitespace-nowrap ${activeTab === tab.id ? 'bg-white text-[#043003] shadow-xl ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-900'}`}
               >
                   <tab.icon size={18}/> {tab.label}
                   {tab.badge !== undefined && tab.badge > 0 && <span className="bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black">{tab.badge}</span>}
               </button>
           ))}
       </div>
+
+      {/* TAB CONTENT: PIPELINE (Kanban View) */}
+      {activeTab === 'PIPELINE' && (
+          <div className="animate-in fade-in slide-in-from-right-4 duration-500 px-2 overflow-x-auto custom-scrollbar">
+              <div className="flex gap-6 min-w-[1200px] pb-10">
+                  {PIPELINE_STAGES.map(stage => {
+                      const stageLeads = leads.filter(l => l.status === stage.id);
+                      const totalValue = stageLeads.reduce((sum, l) => sum + (l.estimatedMonthlyValue || 0), 0);
+
+                      return (
+                          <div key={stage.id} className="flex-1 min-w-[300px] flex flex-col gap-6">
+                              <div className="flex items-center justify-between px-4">
+                                  <div className="flex items-center gap-3">
+                                      <div className={`w-2 h-6 ${stage.color} rounded-full`}></div>
+                                      <h3 className="font-black text-gray-900 uppercase text-xs tracking-widest">{stage.label}</h3>
+                                      <span className="bg-gray-100 text-gray-400 text-[10px] font-black px-2 py-0.5 rounded-lg">{stageLeads.length}</span>
+                                  </div>
+                                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">${totalValue.toLocaleString()}</p>
+                              </div>
+
+                              <div className="space-y-4 min-h-[500px] bg-gray-50/50 p-4 rounded-[2rem] border border-gray-100/50 border-dashed">
+                                  {stageLeads.map(lead => (
+                                      <div key={lead.id} className="bg-white p-6 rounded-[1.75rem] border border-gray-100 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all group animate-in zoom-in-95">
+                                          <div className="flex justify-between items-start mb-4">
+                                              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-700 font-black text-sm uppercase">
+                                                  {lead.businessName.charAt(0)}
+                                              </div>
+                                              <div className="text-right">
+                                                  <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mb-0.5">EST. VALUE</p>
+                                                  <p className="text-sm font-black text-gray-900 tracking-tighter">${lead.estimatedMonthlyValue?.toLocaleString()}</p>
+                                              </div>
+                                          </div>
+                                          
+                                          <h4 className="font-black text-gray-900 text-base uppercase leading-tight truncate mb-2">{lead.businessName}</h4>
+                                          <div className="space-y-2 mb-6">
+                                              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight flex items-center gap-2">
+                                                  <MapPin size={12}/> {lead.location}
+                                              </p>
+                                              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight flex items-center gap-2">
+                                                  <Clock size={12}/> Last activity: {new Date(lead.lastActivityDate!).toLocaleDateString()}
+                                              </p>
+                                          </div>
+
+                                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                              <button 
+                                                onClick={() => handleMoveLead(lead.id, lead.status)}
+                                                className="flex-1 py-2 bg-indigo-600 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-100 active:scale-95"
+                                              >
+                                                Advance <ArrowRight size={10}/>
+                                              </button>
+                                              <button className="p-2 bg-gray-50 text-gray-400 rounded-lg hover:text-indigo-600 transition-colors">
+                                                <Smartphone size={14}/>
+                                              </button>
+                                          </div>
+                                      </div>
+                                  ))}
+                                  
+                                  <button className="w-full py-4 border-2 border-dashed border-gray-200 text-gray-300 rounded-[1.75rem] flex items-center justify-center gap-2 hover:border-indigo-300 hover:text-indigo-600 hover:bg-white transition-all group">
+                                      <Plus size={16} className="group-hover:rotate-90 transition-transform"/>
+                                      <span className="text-[10px] font-black uppercase tracking-widest">Add Lead</span>
+                                  </button>
+                              </div>
+                          </div>
+                      );
+                  })}
+              </div>
+          </div>
+      )}
 
       {/* TAB CONTENT: OVERVIEW */}
       {activeTab === 'OVERVIEW' && (
@@ -144,7 +232,7 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
               <div className="lg:col-span-8 space-y-8">
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-3">
-                        <AlertCircle className="text-orange-500" size={28}/> Critical Resolution Deck
+                        <AlertCircle className="text-orange-500" size={28}/> Resolution Center
                     </h2>
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{activeIssues.length} ACTIVE DISPUTES</span>
                   </div>
@@ -154,8 +242,8 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
                           <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 mb-6 shadow-inner-sm">
                             <CheckCircle size={40} strokeWidth={2.5}/>
                           </div>
-                          <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight">System Settlement: Clear</h3>
-                          <p className="text-sm text-gray-400 font-medium max-w-xs mx-auto mt-2">All client deliveries for this period have been verified without variance reports.</p>
+                          <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight">Status: Clear</h3>
+                          <p className="text-sm text-gray-400 font-medium max-w-xs mx-auto mt-2">All client deliveries have been verified without variance reports.</p>
                       </div>
                   ) : (
                       <div className="grid grid-cols-1 gap-6">
@@ -185,16 +273,11 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-8 bg-gray-50/80 p-6 rounded-[2rem] border border-gray-100 relative group-hover:bg-white group-hover:border-red-50 transition-all">
-                                        <p className="text-gray-700 font-bold text-lg leading-relaxed">
-                                            "{order.issue?.description}"
-                                        </p>
-                                    </div>
                                     <div className="mt-8 pt-8 border-t border-gray-100 flex gap-3">
-                                        <button className="flex-1 py-4 bg-white border-2 border-gray-100 text-gray-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-indigo-500 hover:text-indigo-600 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm">
+                                        <button className="flex-1 py-4 bg-white border-2 border-gray-100 text-gray-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-indigo-500 hover:text-indigo-600 transition-all flex items-center justify-center gap-2 shadow-sm">
                                             <MessageCircle size={18}/> Chat Supplier
                                         </button>
-                                        <button className="flex-[2] py-4 bg-[#0F172A] hover:bg-black text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl transition-all flex items-center justify-center gap-3 active:scale-95">
+                                        <button className="flex-[2] py-4 bg-[#0F172A] hover:bg-black text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl transition-all flex items-center justify-center gap-3">
                                             Mediate Dispute <ChevronRight size={18} strokeWidth={3}/>
                                         </button>
                                     </div>
@@ -219,15 +302,6 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
                                 </div>
                                 <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden shadow-inner-sm">
                                     <div className="h-full bg-emerald-400 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(52,211,153,0.5)]" style={{width: '84%'}}></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div className="flex justify-between text-sm mb-3">
-                                    <span className="font-black uppercase tracking-widest text-indigo-100 text-[10px]">New Account Activation</span>
-                                    <span className="font-black text-xl tracking-tighter">8 / 10</span>
-                                </div>
-                                <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden shadow-inner-sm">
-                                    <div className="h-full bg-emerald-400 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(52,211,153,0.5)]" style={{width: '80%'}}></div>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +329,6 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
                             </div>
                         ))}
                       </div>
-                      <button onClick={() => setActiveTab('COMMISSIONS')} className="mt-10 w-full py-4 bg-gray-50 text-gray-500 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all">View All Entries</button>
                   </div>
               </div>
           </div>
@@ -281,7 +354,7 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {filteredNetwork.map(customer => (
-                      <div key={customer.id} className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all group flex flex-col justify-between h-[420px] animate-in zoom-in-95 duration-300">
+                      <div key={customer.id} className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-2xl transition-all group flex flex-col justify-between min-h-[400px] animate-in zoom-in-95 duration-300">
                           <div>
                             <div className="flex justify-between items-start mb-8">
                                 <div className="w-16 h-16 rounded-[1.25rem] bg-indigo-50 text-indigo-700 flex items-center justify-center font-black text-3xl shadow-inner-sm border border-indigo-100/50 group-hover:scale-105 transition-transform">{customer.businessName.charAt(0)}</div>
@@ -322,9 +395,8 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
                         <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm border border-gray-100">
                             <Wallet size={24}/>
                         </div>
-                        <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Commission Activity Log</h2>
+                        <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">Ledger</h2>
                     </div>
-                    <button className="px-6 py-3 bg-white border border-gray-200 rounded-xl text-gray-400 font-black text-[10px] uppercase tracking-widest hover:text-indigo-600 transition-all flex items-center gap-2 shadow-sm"><Download size={16}/> Export Statement</button>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
@@ -365,15 +437,6 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
       {/* TAB CONTENT: DISPUTES */}
       {activeTab === 'DISPUTES' && (
           <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 px-2">
-              <div className="bg-red-50 border border-red-100 rounded-[2.5rem] p-10 flex items-start gap-8 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-8 opacity-5 transform rotate-12 scale-150"><Gavel size={200} className="text-red-900"/></div>
-                  <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-red-600 shadow-xl border border-red-50 shrink-0 relative z-10"><Gavel size={32} strokeWidth={2.5}/></div>
-                  <div className="relative z-10">
-                      <h3 className="text-2xl font-black text-red-900 uppercase tracking-tight mb-2">Network Dispute Mediation</h3>
-                      <p className="text-red-700 text-lg font-medium leading-relaxed max-w-3xl">As a PZ Representative, your role is to verify the legitimacy of produce quality reports. Review the evidence provided by your buyers and coordinate with wholesalers for immediate remediation or credit issuance.</p>
-                  </div>
-              </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {activeIssues.map(issue => (
                       <div key={issue.id} className="bg-white border-2 border-red-50 rounded-[3rem] p-8 hover:border-red-200 hover:shadow-2xl transition-all duration-500 group animate-in zoom-in-95">
@@ -384,17 +447,12 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
                               <span className="bg-red-50 text-red-600 px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100 shadow-sm animate-pulse">ACTION REQUIRED</span>
                           </div>
                           <h3 className="font-black text-gray-900 text-2xl uppercase tracking-tighter leading-none mb-2">{assignedCustomers.find(c => c.id === issue.buyerId)?.businessName}</h3>
-                          <div className="flex items-center gap-4 mb-10">
-                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><Clock size={12}/> Reported {new Date(issue.issue?.reportedAt!).toLocaleTimeString()}</span>
-                              <span className="w-1.5 h-1.5 rounded-full bg-gray-200"></span>
-                              <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Wholesaler: {mockService.getAllUsers().find(u => u.id === issue.sellerId)?.businessName}</span>
-                          </div>
                           <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 mb-10 min-h-[120px] flex flex-col justify-center italic">
                               <p className="text-gray-600 font-bold">"{issue.issue?.description}"</p>
                           </div>
                           <div className="flex gap-3">
-                              <button className="flex-1 py-4 bg-white border-2 border-gray-100 text-gray-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-indigo-600 hover:text-indigo-600 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><ImageIcon size={18}/> View Evidence</button>
-                              <button className="flex-[2] py-4 bg-[#0F172A] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2 active:scale-95">Resolve Case</button>
+                              <button className="flex-1 py-4 bg-white border-2 border-gray-100 text-gray-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-indigo-600 hover:text-indigo-600 transition-all flex items-center justify-center gap-2 shadow-sm"><ImageIcon size={18}/> View Evidence</button>
+                              <button className="flex-[2] py-4 bg-[#0F172A] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2">Resolve Case</button>
                           </div>
                       </div>
                   ))}
@@ -410,7 +468,3 @@ export const RepDashboard: React.FC<RepDashboardProps> = ({ user }) => {
     </div>
   );
 };
-
-const Download = ({ size = 24, ...props }: any) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-);

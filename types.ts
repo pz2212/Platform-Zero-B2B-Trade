@@ -315,6 +315,8 @@ export interface RegistrationRequest {
   };
 }
 
+export type LeadStatus = 'DISCOVERY' | 'ENGAGEMENT' | 'PROPOSAL' | 'CLOSING' | 'ONBOARDED' | 'LOST';
+
 export interface Lead {
   id: string;
   businessName: string;
@@ -323,5 +325,8 @@ export interface Lead {
   phone?: string;
   location: string;
   source: 'AI_SCAN' | 'MANUAL' | 'REFERRAL';
-  status: 'NEW' | 'CONTACTED' | 'QUOTED' | 'CONVERTED';
+  status: LeadStatus;
+  estimatedMonthlyValue?: number;
+  lastActivityDate?: string;
+  assignedRepId?: string;
 }
