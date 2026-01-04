@@ -34,6 +34,7 @@ import { SharedProductLanding } from './components/SharedProductLanding';
 import { EnvironmentalImpact } from './components/EnvironmentalImpact';
 import { AdminMarketOps } from './components/AdminMarketOps';
 import { InterestsModal } from './components/InterestsModal';
+import { RepDashboard } from './components/RepDashboard';
 import { 
   LayoutDashboard, ShoppingCart, Users, Settings, LogOut, Tags, ChevronDown, UserPlus, 
   DollarSign, X, Lock, ArrowLeft, Bell, 
@@ -177,11 +178,18 @@ const AppLayout = ({ children, user, onLogout }: any) => {
 
             <div className="pt-4 mt-4 border-t border-gray-100">
                 <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Management</p>
-                <SidebarLink to="/rep-management" icon={Briefcase} label="Rep Management" active={isActive('/rep-management')} />
+                <SidebarLink to="/rep-management" icon={Users2} label="Team & Reps" active={isActive('/rep-management')} />
                 <SidebarLink to="/suppliers" icon={Store} label="Suppliers" active={isActive('/suppliers')} />
                 <SidebarLink to="/marketplace" icon={Layers} label="Catalog Manager" active={isActive('/marketplace')} />
             </div>
           </div>
+      ) : user.role === UserRole.PZ_REP ? (
+        <div className="space-y-1">
+            <SidebarLink to="/" icon={LayoutDashboard} label="Dashboard" active={isActive('/', true)} />
+            <SidebarLink to="/contacts" icon={Users} label="My Client Network" active={isActive('/contacts')} />
+            <SidebarLink to="/impact" icon={Leaf} label="Impact Ledger" active={isActive('/impact')} />
+            <SidebarLink to="/accounts" icon={Wallet} label="Commissions" active={isActive('/accounts')} />
+        </div>
       ) : user.role === UserRole.CONSUMER ? (
         <div className="space-y-1">
             <SidebarLink to="/" icon={LayoutDashboard} label="Dashboard" active={isActive('/', true)} />
@@ -244,7 +252,7 @@ const AppLayout = ({ children, user, onLogout }: any) => {
           <span className="font-black text-xl tracking-tighter text-gray-900 uppercase">Platform Zero</span>
         </div>
         
-        <div className="flex-1 px-4 space-y-8 flex flex-col no-scrollbar">
+        <div className="flex-1 px-4 space-y-8 flex flex-col no-scrollbar overflow-y-auto max-h-[calc(100vh-160px)]">
             <NavContent />
         </div>
 
@@ -397,6 +405,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={
         user?.role === UserRole.ADMIN ? <AdminDashboard /> : 
+        user?.role === UserRole.PZ_REP ? <RepDashboard user={user} /> :
         user?.role === UserRole.CONSUMER ? <ConsumerDashboard user={user} /> : 
         user?.role === UserRole.GROCERY ? <GrocerDashboard user={user} /> :
         user ? <Dashboard user={user} /> : <Navigate to="/" />
@@ -419,6 +428,7 @@ const App = () => {
       <Route path="/accounts" element={user ? <Accounts user={user} /> : <Navigate to="/" />} />
       <Route path="/settings" element={user ? <SettingsComponent user={user} /> : <Navigate to="/" />} />
       <Route path="/orders" element={user ? <CustomerOrders user={user} /> : <Navigate to="/" />} />
+      <Route path="/contacts" element={user ? <Contacts user={user} /> : <Navigate to="/" />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -514,10 +524,10 @@ const AuthModal = ({ isOpen, onClose, onAutoLogin, onCodeLogin }: any) => {
 
     const demoLogins = [
         { label: 'ADMIN HQ', email: 'admin@pz.com', color: 'bg-slate-50 border-slate-100 hover:bg-slate-100' },
+        { label: 'SALES REP', email: 'mark@rep.com', color: 'bg-purple-50 border-purple-100 hover:bg-purple-100' },
         { label: 'WHOLESALER', email: 'sarah@fresh.com', color: 'bg-blue-50 border-blue-100 hover:bg-blue-100' },
         { label: 'FARMER', email: 'bob@greenvalley.com', color: 'bg-emerald-50 border-emerald-100 hover:bg-emerald-100' },
         { label: 'BUYER (CAFÉ)', email: 'alice@cafe.com', color: 'bg-indigo-50 border-indigo-100 hover:bg-indigo-100' },
-        { label: 'BUYER (GROCERY)', email: 'gary@grocer.com', color: 'bg-orange-50 border-orange-100 hover:bg-orange-100' },
     ];
 
     return (

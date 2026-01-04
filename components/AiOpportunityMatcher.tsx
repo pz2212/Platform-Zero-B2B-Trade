@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, ScanLine, CheckCircle, Send, MessageSquare, AlertCircle, Loader2, Image as ImageIcon, FolderOpen, X, Store, MapPin, Share2, Heart, Edit2, ChevronDown } from 'lucide-react';
+import { Camera, Upload, ScanLine, CheckCircle, Send, MessageSquare, AlertCircle, Loader2, Image as ImageIcon, FolderOpen, X, Store, MapPin, Share2, Heart, Edit2, ChevronDown, Package, Plus, Sparkles } from 'lucide-react';
 import { mockService } from '../services/mockDataService';
 import { identifyProductFromImage } from '../services/geminiService';
 import { Customer, User, InventoryItem, Product } from '../types';
@@ -18,9 +18,11 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
   const [isEditingName, setIsEditingName] = useState(false);
   const [matchedBuyers, setMatchedBuyers] = useState<Customer[]>([]);
   const [price, setPrice] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(100);
   const [products, setProducts] = useState<Product[]>([]);
   
   const [isSending, setIsSending] = useState(false);
+  const [isAddingInventory, setIsAddingInventory] = useState(false);
   const [offersSent, setOffersSent] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   
@@ -41,7 +43,7 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
   useEffect(() => {
     setProducts(mockService.getAllProducts());
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowSourceMenu(false);
       }
     };
@@ -50,6 +52,8 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showSourceMenu]);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -96,8 +100,9 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
     }
   };
 
-  const handleAddToInventory = () => {
+  const handleAddToInventory = async () => {
     if (!analysisResult) return;
+    setIsAddingInventory(true);
     
     const product = products.find(p => p.name.toLowerCase().includes(analysisResult.name.toLowerCase())) || products[0];
     
@@ -106,18 +111,26 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
         lotNumber: mockService.generateLotId(),
         ownerId: user?.id || 'u2',
         productId: product.id,
-        quantityKg: 100,
+        quantityKg: quantity,
         status: 'Available',
         harvestDate: new Date().toISOString(),
         harvestLocation: 'Direct via AI Scanner',
         uploadedAt: new Date().toISOString(),
         expiryDate: new Date(Date.now() + 86400000 * 7).toISOString(),
-        batchImageUrl: image || undefined
+        batchImageUrl: image || undefined,
+        discountPricePerKg: price || undefined
     };
 
+    // Simulate save delay
+    await new Promise(r => setTimeout(r, 1000));
     mockService.addInventoryItem(newItem);
+    if (price > 0) {
+        mockService.updateProductPrice(product.id, price);
+    }
+
+    setIsAddingInventory(false);
     setIsSaved(true);
-    alert(`${analysisResult.name} successfully added to your active inventory catalog!`);
+    alert(`${analysisResult.name} (${quantity}kg) successfully added to your inventory at $${price}/kg.`);
   };
 
   const handleSendOffers = () => {
@@ -157,7 +170,7 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
       lotNumber: 'TMP-LOT',
       ownerId: user?.id || 'u2',
       productId: products.find(p => p.name.toLowerCase().includes(analysisResult.name.toLowerCase()))?.id || 'p1',
-      quantityKg: 100,
+      quantityKg: quantity,
       expiryDate: new Date().toISOString(),
       harvestDate: new Date().toISOString(),
       uploadedAt: new Date().toISOString(),
@@ -207,7 +220,7 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                 )}
                 
                 {showSourceMenu && (
-                    <div ref={menuRef} className="absolute z-20 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-100 py-2 w-64 animate-in zoom-in-95 fade-in duration-200">
+                    <div ref={dropdownRef} className="absolute z-20 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-100 py-2 w-64 animate-in zoom-in-95 fade-in duration-200">
                         <button onClick={() => fileInputRef.current?.click()} className="w-full text-left px-5 py-3.5 hover:bg-gray-50 flex items-center gap-4 transition-colors">
                             <ImageIcon size={20} className="text-gray-600"/>
                             <span className="font-bold text-gray-800">Photo Library</span>
@@ -258,27 +271,20 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                                     </div>
                                 ) : (
                                     <div className="group cursor-pointer flex items-center gap-2" onClick={() => setIsEditingName(true)}>
-                                        <h3 className="font-black text-gray-900 text-2xl tracking-tight">{analysisResult.name}</h3>
+                                        <h3 className="font-black text-gray-900 text-2xl tracking-tight leading-none">{analysisResult.name}</h3>
                                         <Edit2 size={16} className="text-gray-300 group-hover:text-indigo-500 transition-colors" />
                                     </div>
                                 )}
-                                <p className="text-xs font-black text-emerald-600 uppercase tracking-widest">Identified by Platform Zero AI</p>
+                                <p className="text-xs font-black text-emerald-600 uppercase tracking-widest mt-1.5">Identified by Platform Zero AI</p>
                             </div>
                         </div>
                         <div className="flex gap-2">
                              <button 
                                 onClick={handleAddToInventory}
                                 className={`p-3 rounded-full transition-all active:scale-95 shadow-md ${isSaved ? 'bg-red-500 text-white shadow-red-100' : 'bg-white border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200'}`}
-                                title="Add to My Inventory"
+                                title="Quick Add to My Inventory"
                              >
                                 <Heart size={24} fill={isSaved ? "currentColor" : "none"} strokeWidth={isSaved ? 0 : 2}/>
-                             </button>
-                             <button 
-                                onClick={() => setIsShareOpen(true)}
-                                className="p-3 bg-white border border-gray-200 rounded-full text-indigo-600 shadow-md hover:bg-indigo-50 hover:border-indigo-200 transition-all active:scale-95"
-                                title="Share with Contacts"
-                             >
-                                <Share2 size={24} />
                              </button>
                         </div>
                     </div>
@@ -288,24 +294,53 @@ export const AiOpportunityMatcher: React.FC<AiOpportunityMatcherProps> = ({ user
                         <p className="text-emerald-900 font-bold text-lg">"{analysisResult.quality}"</p>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest">Set Your Direct Sale Price ($/kg)</label>
-                        <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-black text-2xl">$</span>
-                            <input 
-                                type="number" 
-                                className="w-full pl-10 pr-6 py-5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-black text-3xl text-gray-900 transition-all"
-                                placeholder="0.00"
-                                value={price || ''}
-                                onChange={(e) => setPrice(parseFloat(e.target.value))}
-                            />
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                        <div className="space-y-2">
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">YOUR PRICE ($/KG)</label>
+                            <div className="relative group">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-black text-xl">$</span>
+                                <input 
+                                    type="number" 
+                                    className="w-full pl-10 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-black text-2xl text-gray-900 transition-all shadow-inner-sm"
+                                    placeholder="0.00"
+                                    value={price || ''}
+                                    onChange={(e) => setPrice(parseFloat(e.target.value))}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">QUANTITY (KG)</label>
+                            <div className="relative group">
+                                <Package className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18}/>
+                                <input 
+                                    type="number" 
+                                    className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none font-black text-2xl text-gray-900 transition-all shadow-inner-sm"
+                                    placeholder="100"
+                                    value={quantity || ''}
+                                    onChange={(e) => setQuantity(parseFloat(e.target.value))}
+                                />
+                            </div>
                         </div>
                     </div>
+
+                    <button 
+                        onClick={handleAddToInventory}
+                        disabled={isAddingInventory || !quantity}
+                        className={`w-full py-5 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[11px] shadow-xl transition-all flex items-center justify-center gap-3 active:scale-[0.98] ${isSaved ? 'bg-emerald-600 text-white' : 'bg-[#0F172A] text-white hover:bg-black'}`}
+                    >
+                        {isAddingInventory ? (
+                            <><Loader2 className="animate-spin" size={18}/> Committing to Ledger...</>
+                        ) : isSaved ? (
+                            <><CheckCircle size={18}/> Added to Inventory</>
+                        ) : (
+                            <><Plus size={18}/> Add to My Market Inventory</>
+                        )}
+                    </button>
                 </div>
             )}
         </div>
 
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-200 flex flex-col h-[700px] overflow-hidden">
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 flex flex-col h-[700px] overflow-hidden">
             <div className="p-8 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                 <div>
                     <h2 className="text-xl font-black text-gray-900 tracking-tight uppercase">Buyer Opportunities</h2>

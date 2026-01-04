@@ -7,12 +7,11 @@ import { triggerNativeSms, generateProductDeepLink } from '../services/smsServic
 import { InviteBuyerModal } from './InviteBuyerModal';
 import { 
   MessageCircle, Send, Plus, X, Search, Info, 
-  ShoppingBag, Link as LinkIcon, CheckCircle, Clock,
+  ShoppingBag, CheckCircle, Clock,
   Store, MapPin, Phone, ShieldCheck, Tag, ChevronRight, Users, UserCheck,
   ArrowLeft, UserPlus, Smartphone, Contact, Loader2, Building, Mail, BookOpen,
   Package, DollarSign, Truck, Camera, Image as ImageIcon, ChevronDown, FolderOpen,
   Sprout, ShoppingCart, MessageSquare, Globe, ArrowUpRight, HelpCircle, Activity, Heart, TrendingUp,
-  /* Added missing Calendar icon import */
   Calendar
 } from 'lucide-react';
 import { ChatDialog } from './ChatDialog';
@@ -23,30 +22,17 @@ interface ContactsProps {
 
 const AU_STATES = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'];
 
-// Data derived from SA Produce Market Warehouse/Wholesaler Directory
 const SA_PRODUCE_MARKET_SUPPLIERS = [
-    { name: 'Advent Produce', mobile: '0412 888 333', email: 'advent@saproducemarket.com.au', location: 'Store 31-33', specialty: 'General Produce', type: 'Wholesaler' },
-    { name: 'AMJ Produce', mobile: '0422 777 444', email: 'sales@amjproduce.com.au', location: 'Burma Drive, Pooraka', specialty: 'Fruit & Veg', type: 'Warehouse' },
-    { name: 'B&C Fresh', mobile: '0433 666 555', email: 'admin@bcfresh.com.au', location: 'Store 12-14', specialty: 'Exotics', type: 'Wholesaler' },
-    { name: 'Bache Bros', mobile: '0444 555 666', email: 'bachebros@internode.on.net', location: 'Store 60', specialty: 'Potatoes & Onions', type: 'Wholesaler' },
-    { name: 'Ceravolo Orchards', mobile: '0455 444 777', email: 'info@ceravolo.com.au', location: 'Store 32', specialty: 'Apples & Pears', type: 'Wholesaler' },
-    { name: 'Costa Group (SA)', mobile: '0466 333 888', email: 'sa.sales@costagroup.com.au', location: 'Store 101', specialty: 'Global Produce', type: 'Warehouse' },
-    { name: 'Favco SA', mobile: '0477 222 999', email: 'sales@favcosa.com.au', location: 'Store 41-43', specialty: 'Premium Stonefruit', type: 'Wholesaler' },
-    { name: 'GD Produce', mobile: '0488 111 000', email: 'sales@gdproduce.com.au', location: 'Store 12', specialty: 'Leafy Greens', type: 'Wholesaler' },
-    { name: 'George\'s Fruit & Veg', mobile: '0499 000 111', email: 'george@georges.com.au', location: 'Store 22', specialty: 'Asian Produce', type: 'Wholesaler' },
-    { name: 'J.H. Fawcett', mobile: '0411 999 222', email: 'admin@jhfawcett.com.au', location: 'Store 18', specialty: 'Root Vegetables', type: 'Wholesaler' },
-    { name: 'LaManna Premier', mobile: '0422 888 333', email: 'sa@lamannapremier.com.au', location: 'Store 50-55', specialty: 'Bananas & Melons', type: 'Warehouse' },
-    { name: 'Mackays Produce', mobile: '0433 777 444', email: 'sales@mackays.com.au', location: 'Store 45', specialty: 'Tropical', type: 'Wholesaler' },
-    { name: 'Marano\'s Produce', mobile: '0444 666 555', email: 'sales@maranos.com.au', location: 'Store 62', specialty: 'Mixed Veg', type: 'Wholesaler' },
-    { name: 'Moraitis (SA)', mobile: '0455 555 666', email: 'sa@moraitis.com.au', location: 'Store 80-84', specialty: 'Potatoes & Carrots', type: 'Warehouse' },
-    { name: 'Perfection Fresh', mobile: '0466 444 777', email: 'sales@perfection.com.au', location: 'Store 52', specialty: 'Branded Specialty', type: 'Wholesaler' },
-    { name: 'Produce SA', mobile: '0477 333 888', email: 'admin@producesa.com.au', location: 'Store 34', specialty: 'Broccoli & Cauliflower', type: 'Wholesaler' },
-    { name: 'Quality Produce International', mobile: '0488 222 999', email: 'info@qpi.com.au', location: 'Store 27', specialty: 'Citrus & Export', type: 'Wholesaler' },
-    { name: 'S.A. Mushroom Co', mobile: '0499 111 000', email: 'sales@samushrooms.com.au', location: 'Store 15', specialty: 'Mushrooms', type: 'Warehouse' },
-    { name: 'SA Potato Company', mobile: '0411 000 111', email: 'admin@sapota.com.au', location: 'Store 70', specialty: 'Potatoes', type: 'Warehouse' },
-    { name: 'Sunfresh', mobile: '0422 999 222', email: 'sales@sunfresh.com.au', location: 'Store 90', specialty: 'Salad Mixes', type: 'Wholesaler' },
-    { name: 'Thorpes Produce', mobile: '0433 888 333', email: 'admin@thorpes.com.au', location: 'Store 4', specialty: 'Seasonal Fruit', type: 'Wholesaler' },
-    { name: 'Vizzarri Farms', mobile: '0444 777 444', email: 'admin@vizzarri.com.au', location: 'Store 88', specialty: 'Fresh Herbs', type: 'Wholesaler' },
+    { name: 'Advent Produce', mobile: '0412 888 333', email: 'advent@saproducemarket.com.au', location: 'Store 31-33', specialty: 'GENERAL PRODUCE', type: 'WHOLESALER', imageUrl: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&q=80&w=300' },
+    { name: 'AMJ Produce', mobile: '0422 777 444', email: 'sales@amjproduce.com.au', location: 'Burma Drive, Pooraka', specialty: 'FRUIT & VEG', type: 'WAREHOUSE', imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=300' },
+    { name: 'B&C Fresh', mobile: '0433 666 555', email: 'admin@bcfresh.com.au', location: 'Store 12-14', specialty: 'EXOTICS', type: 'WHOLESALER', imageUrl: 'https://images.unsplash.com/photo-1615485500704-8e990f9900f1?auto=format&fit=crop&q=80&w=300' },
+    { name: 'Bache Bros', mobile: '0444 555 666', email: 'bachebros@internode.on.net', location: 'Store 60', specialty: 'POTATOES & ONIONS', type: 'WHOLESALER', imageUrl: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&q=80&w=300' },
+    { name: 'Ceravolo Orchards', mobile: '0455 444 777', email: 'info@ceravolo.com.au', location: 'Store 32', specialty: 'APPLES & PEARS', type: 'WHOLESALER', imageUrl: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&q=80&w=300' },
+    { name: 'Costa Group (SA)', mobile: '0466 333 888', email: 'sa.sales@costagroup.com.au', location: 'Store 101', specialty: 'GLOBAL PRODUCE', type: 'WAREHOUSE', imageUrl: 'https://images.unsplash.com/photo-1595231712325-9feda07b0632?auto=format&fit=crop&q=80&w=300' },
+    { name: 'Favco SA', mobile: '0477 222 999', email: 'sales@favcosa.com.au', location: 'Store 41-43', specialty: 'PREMIUM STONEFRUIT', type: 'WHOLESALER', imageUrl: 'https://images.unsplash.com/photo-1543073289-53428df1972b?auto=format&fit=crop&q=80&w=300' },
+    { name: 'GD Produce', mobile: '0488 111 000', email: 'sales@gdproduce.com.au', location: 'Store 12', specialty: 'LEAFY GREENS', type: 'WHOLESALER', imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=300' },
+    { name: 'George\'s Fruit & Veg', mobile: '0499 000 111', email: 'george@georges.com.au', location: 'Store 22', specialty: 'ASIAN PRODUCE', type: 'WHOLESALER', imageUrl: 'https://images.unsplash.com/photo-1559181567-c3190cb9959b?auto=format&fit=crop&q=80&w=300' },
+    { name: 'J.H. Fawcett', mobile: '0411 999 222', email: 'admin@jhfawcett.com.au', location: 'Store 18', specialty: 'ROOT VEGETABLES', type: 'WHOLESALER', imageUrl: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=300' },
 ];
 
 const SendProductOfferModal = ({ isOpen, onClose, targetPartner, products }: { 
@@ -91,22 +77,22 @@ const SendProductOfferModal = ({ isOpen, onClose, targetPartner, products }: {
         <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
             <div className="bg-white rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95">
                 <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                    <div><h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Direct Photo Offer</h2><p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">To: {targetPartner.name || targetPartner.businessName}</p></div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-2"><X size={24}/></button>
+                    <div><h2 className="text-xl font-black text-black uppercase tracking-tight">Direct Photo Offer</h2><p className="text-[10px] text-black font-black uppercase tracking-widest mt-1">To: {targetPartner.name || targetPartner.businessName}</p></div>
+                    <button onClick={onClose} className="text-black hover:text-gray-600 p-2"><X size={24}/></button>
                 </div>
                 <form onSubmit={handleSubmit} className="p-8 space-y-6">
                     <div onClick={() => fileInputRef.current?.click()} className={`h-48 border-4 border-dashed rounded-[2rem] flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all bg-gray-50 shadow-inner-sm ${customImage ? 'border-emerald-500' : 'border-gray-200 hover:border-indigo-400'}`}>
-                        {customImage ? <img src={customImage} className="w-full h-full object-cover" alt=""/> : <div className="text-center"><Camera size={32} className="text-gray-300 mx-auto mb-2"/><p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Product Photo</p></div>}
+                        {customImage ? <img src={customImage} className="w-full h-full object-cover" alt=""/> : <div className="text-center"><Camera size={32} className="text-gray-300 mx-auto mb-2"/><p className="text-[10px] font-black text-black uppercase tracking-widest">Select Product Photo</p></div>}
                         <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFile}/>
                     </div>
                     <div className="space-y-4">
-                        <select required className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-indigo-50/10" value={offerData.productId} onChange={e => setOfferData({...offerData, productId: e.target.value})}>
+                        <select required className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl font-black text-sm text-black outline-none focus:ring-4 focus:ring-indigo-50/10" value={offerData.productId} onChange={e => setOfferData({...offerData, productId: e.target.value})}>
                             <option value="">Select Catalog Variety...</option>
                             {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                         </select>
                         <div className="grid grid-cols-2 gap-3">
-                            <input required type="number" step="0.01" placeholder="Price ($/kg)" className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-indigo-50/10" value={offerData.price} onChange={e => setOfferData({...offerData, price: e.target.value})}/>
-                            <input required type="number" placeholder="Min Qty (kg)" className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-bold text-sm outline-none focus:ring-4 focus:ring-indigo-50/10" value={offerData.minOrder} onChange={e => setOfferData({...offerData, minOrder: e.target.value})}/>
+                            <input required type="number" step="0.01" placeholder="Price ($/kg)" className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-black text-sm text-black outline-none focus:ring-4 focus:ring-indigo-50/10" value={offerData.price} onChange={e => setOfferData({...offerData, price: e.target.value})}/>
+                            <input required type="number" placeholder="Min Qty (kg)" className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl font-black text-sm text-black outline-none focus:ring-4 focus:ring-indigo-50/10" value={offerData.minOrder} onChange={e => setOfferData({...offerData, minOrder: e.target.value})}/>
                         </div>
                     </div>
                     <button type="submit" disabled={isSubmitting || !customImage || !offerData.productId} className="w-full py-5 bg-[#043003] text-white rounded-full font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50">
@@ -120,10 +106,6 @@ const SendProductOfferModal = ({ isOpen, onClose, targetPartner, products }: {
 
 export const Contacts: React.FC<ContactsProps> = ({ user }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const targetId = queryParams.get('id');
-
   const [activeTab, setActiveTab] = useState<'customers' | 'suppliers' | 'procurement'>('customers');
   const [selectedState, setSelectedState] = useState('SA');
   const [activeContact, setActiveContact] = useState<User | null>(null);
@@ -135,11 +117,9 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
   const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
   const [sentRequestsCount, setSentRequestsCount] = useState(0);
 
-  /* Added missing state to support handleConnect and ChatDialog */
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatTargetName, setChatTargetName] = useState('');
   
-  // Sourcing Data
   const [suppliers, setSuppliers] = useState<User[]>([]);
   const [supplierInventory, setSupplierInventory] = useState<Record<string, InventoryItem[]>>({});
   const [procurementRequests, setProcurementRequests] = useState<ProcurementRequest[]>([]);
@@ -150,57 +130,28 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
 
   useEffect(() => {
     loadData();
-    const interval = setInterval(loadData, 5000);
-    return () => clearInterval(interval);
-  }, [targetId, user.id]);
+  }, [user.id]);
 
   const loadData = () => {
     setProducts(mockService.getAllProducts());
     setMyCustomers(mockService.getCustomers());
     setAllOrders(mockService.getOrders(user.id));
     
-    // Check for incoming price requests (to me as wholesaler)
     const incomingRequests = mockService.getSupplierPriceRequests(user.id).filter(r => r.status === 'PENDING');
     setPendingRequestsCount(incomingRequests.length);
 
-    // Check for outgoing procurement requests (sent by me)
     const myProcurements = mockService.getProcurementRequests(user.id).filter(r => r.buyerId === user.id);
     setProcurementRequests(myProcurements);
     setSentRequestsCount(myProcurements.filter(r => r.status === 'PENDING').length);
 
-    // Load Suppliers for sourcing view
     const allUsers = mockService.getAllUsers();
     const networkSuppliers = allUsers.filter(u => u.id !== user.id && (u.role === UserRole.WHOLESALER || u.role === UserRole.FARMER));
     setSuppliers(networkSuppliers);
-    
-    const invMap: Record<string, InventoryItem[]> = {};
-    networkSuppliers.forEach(s => {
-        invMap[s.id] = mockService.getInventory(s.id).filter(i => i.status === 'Available');
-    });
-    setSupplierInventory(invMap);
-
-    if (targetId) {
-      const found = mockService.getAllUsers().find(u => u.id === targetId);
-      if (found) {
-        setActiveContact(found);
-        setMessages(mockService.getChatMessages(user.id, targetId));
-      }
-    } else {
-      setActiveContact(null);
-    }
   };
 
-  /* Fixed: Added missing handleConnect function */
   const handleConnect = (name: string) => {
     setChatTargetName(name);
     setIsChatOpen(true);
-  };
-
-  const handleSendMessage = (text: string) => {
-    if (!activeContact || !text.trim()) return;
-    mockService.sendChatMessage(user.id, activeContact.id, text);
-    setMessages(mockService.getChatMessages(user.id, activeContact.id));
-    setInputText('');
   };
 
   const filteredCustomers = myCustomers.filter(c => 
@@ -218,47 +169,12 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
 
   const getStatusConfig = (status: string | undefined) => {
       switch(status) {
-          case 'Active': return { color: 'text-emerald-600 bg-emerald-50 border-emerald-100', icon: UserCheck };
-          case 'Pending Connection': return { color: 'text-orange-600 bg-orange-50 border-orange-100', icon: Clock };
-          case 'Pricing Pending': return { color: 'text-blue-600 bg-blue-50 border-blue-100', icon: DollarSign };
-          default: return { color: 'text-gray-500 bg-gray-50 border-gray-100', icon: HelpCircle };
+          case 'Active': return { color: 'text-emerald-700 bg-emerald-100 border-emerald-200', icon: UserCheck };
+          case 'Pending Connection': return { color: 'text-orange-700 bg-orange-100 border-orange-200', icon: Clock };
+          case 'Pricing Pending': return { color: 'text-blue-700 bg-blue-100 border-blue-200', icon: DollarSign };
+          default: return { color: 'text-black bg-gray-100 border-gray-200', icon: HelpCircle };
       }
   };
-
-  if (activeContact) {
-      return (
-          <div className="h-[calc(100vh-140px)] flex flex-col bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <div className="flex items-center gap-4">
-                <button onClick={() => navigate('/contacts')} className="p-2 hover:bg-gray-200 rounded-full transition-colors"><ArrowLeft size={20}/></button>
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg bg-indigo-100 text-indigo-700 shadow-inner-sm`}>{activeContact.businessName.charAt(0)}</div>
-                <div><h2 className="font-black text-gray-900 text-xl tracking-tight leading-none uppercase">{activeContact.businessName}</h2><p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">{activeContact.role}</p></div>
-              </div>
-            </div>
-            <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-gray-50/30 custom-scrollbar">
-              {messages.map(msg => (
-                <div key={msg.id} className={`flex ${msg.senderId === user.id ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`p-5 rounded-[1.75rem] text-sm max-w-[75%] shadow-sm ${msg.senderId === user.id ? 'bg-[#043003] text-white rounded-br-none' : 'bg-white text-gray-900 border border-gray-100 rounded-bl-none'}`}>
-                        {msg.text}
-                    </div>
-                </div>
-              ))}
-              {messages.length === 0 && (
-                <div className="h-full flex flex-col items-center justify-center text-center text-gray-400">
-                    <MessageSquare size={48} className="opacity-10 mb-4"/>
-                    <p className="text-xs font-black uppercase tracking-widest">Start the conversation</p>
-                </div>
-              )}
-            </div>
-            <div className="p-6 border-t border-gray-100 bg-white">
-                <div className="flex gap-4">
-                    <input type="text" placeholder="Type a message..." className="flex-1 bg-gray-50 border-2 border-gray-100 rounded-2xl p-4 font-bold text-gray-900 outline-none focus:ring-4 focus:ring-emerald-500/5 transition-all" value={inputText} onChange={e => setInputText(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSendMessage(inputText)} />
-                    <button onClick={() => handleSendMessage(inputText)} className="p-4 bg-[#043003] text-white rounded-2xl hover:bg-black transition-all shadow-lg active:scale-95"><Send size={20}/></button>
-                </div>
-            </div>
-          </div>
-      );
-  }
 
   return (
     <div className="space-y-10 animate-in fade-in duration-500 pb-20">
@@ -268,36 +184,36 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
                 {activeTab === 'customers' ? <Users size={36} /> : activeTab === 'suppliers' ? <Store size={36} /> : <ShoppingCart size={36}/>}
             </div>
             <div>
-                <h1 className="text-4xl font-black text-gray-900 tracking-tight uppercase leading-none">
+                <h1 className="text-4xl font-black text-black tracking-tight uppercase leading-none">
                     {activeTab === 'customers' ? 'Buyer Network' : activeTab === 'suppliers' ? 'Market Discovery' : 'Pending Sourcing'}
                 </h1>
-                <p className="text-gray-500 font-bold text-xs uppercase tracking-widest mt-2">
+                <p className="text-black font-black text-xs uppercase tracking-widest mt-2">
                     {activeTab === 'customers' ? 'Connected accounts & manual lead management' : activeTab === 'suppliers' ? 'Explore regional markets and new wholesale buyers' : 'Track price requests you sent to suppliers'}
                 </p>
             </div>
           </div>
           <div className="relative w-full md:w-96 group">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-indigo-500 transition-colors" size={20} />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-black group-focus-within:text-indigo-600 transition-colors" size={20} />
             <input 
                 type="text" 
                 placeholder={activeTab === 'customers' ? "Search connected buyers..." : "Search network..."} 
                 value={searchTerm} 
                 onChange={(e) => setSearchTerm(e.target.value)} 
-                className="w-full pl-14 pr-8 py-5 bg-white border-2 border-gray-100 rounded-[1.5rem] text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-indigo-50/5 transition-all shadow-sm"
+                className="w-full pl-14 pr-8 py-5 bg-white border-2 border-gray-100 rounded-[1.5rem] text-sm font-black text-black outline-none focus:ring-4 focus:ring-indigo-50/5 transition-all shadow-sm"
             />
           </div>
       </div>
 
       <div className="bg-gray-100/50 p-1.5 rounded-[1.5rem] inline-flex border border-gray-200 shadow-sm mx-2 overflow-x-auto no-scrollbar max-w-full">
-        <button onClick={() => setActiveTab('customers')} className={`px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'customers' ? 'bg-white text-gray-900 shadow-md ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600'}`}>
+        <button onClick={() => setActiveTab('customers')} className={`px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'customers' ? 'bg-white text-black shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-900'}`}>
             My Buyers
             {pendingRequestsCount > 0 && <span className="w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] font-black animate-pulse">{pendingRequestsCount}</span>}
         </button>
-        <button onClick={() => setActiveTab('procurement')} className={`px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'procurement' ? 'bg-white text-gray-900 shadow-md ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600'}`}>
+        <button onClick={() => setActiveTab('procurement')} className={`px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap flex items-center gap-2 ${activeTab === 'procurement' ? 'bg-white text-black shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-900'}`}>
             Pending Sourcing
             {sentRequestsCount > 0 && <span className="w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center text-[9px] font-black">{sentRequestsCount}</span>}
         </button>
-        <button onClick={() => setActiveTab('suppliers')} className={`px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3 whitespace-nowrap ${activeTab === 'suppliers' ? 'bg-white text-gray-900 shadow-md ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600'}`}><ShoppingCart size={14}/> Market Directory</button>
+        <button onClick={() => setActiveTab('suppliers')} className={`px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3 whitespace-nowrap ${activeTab === 'suppliers' ? 'bg-white text-black shadow-md ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-900'}`}><ShoppingCart size={14}/> Market Directory</button>
       </div>
       
       {activeTab === 'customers' && (
@@ -306,8 +222,8 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
                   <div className="w-20 h-20 bg-white rounded-[1.5rem] shadow-xl flex items-center justify-center mb-8 border border-gray-50 transition-transform group-hover:scale-110 group-hover:-rotate-3 group-hover:shadow-emerald-100">
                     <UserPlus size={36} className="text-emerald-500"/>
                   </div>
-                  <h3 className="text-2xl font-black text-gray-400 group-hover:text-gray-900 tracking-tight uppercase leading-none">Provision Buyer</h3>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-4 max-w-[180px]">Generate a direct-connect onboarding portal link</p>
+                  <h3 className="text-2xl font-black text-gray-400 group-hover:text-black tracking-tight uppercase leading-none">Provision Buyer</h3>
+                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-4 max-w-[180px]">Generate a direct-connect onboarding portal link</p>
               </div>
 
               {filteredCustomers.map(contact => {
@@ -325,31 +241,31 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
                                     <span className="text-[10px] font-black uppercase tracking-widest">{contact.connectionStatus || 'Connected'}</span>
                                 </div>
                             </div>
-                            <h3 className="text-2xl font-black text-gray-900 tracking-tighter group-hover:text-indigo-600 mb-1 uppercase leading-none transition-colors">{contact.businessName}</h3>
-                            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-6">{contact.category || 'MARKETPLACE BUYER'}</p>
+                            <h3 className="text-2xl font-black text-black tracking-tighter group-hover:text-indigo-600 mb-1 uppercase leading-none transition-colors">{contact.businessName}</h3>
+                            <p className="text-[10px] font-black text-gray-900 uppercase tracking-widest mb-6">{contact.category || 'MARKETPLACE BUYER'}</p>
                             
                             <div className="grid grid-cols-2 gap-3 mb-6">
                                 <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                    <div className="flex items-center gap-2 text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                                        <TrendingUp size={10} className="text-emerald-500"/> Lifetime Volume
+                                    <div className="flex items-center gap-2 text-[8px] font-black text-gray-900 uppercase tracking-widest mb-1">
+                                        <TrendingUp size={10} className="text-emerald-500"/> Volume
                                     </div>
-                                    <p className="text-sm font-black text-gray-900 uppercase tracking-tight truncate">
+                                    <p className="text-sm font-black text-black uppercase tracking-tight truncate">
                                         ${customerGmv.toLocaleString()}
                                     </p>
                                 </div>
                                 <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                    <div className="flex items-center gap-2 text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                    <div className="flex items-center gap-2 text-[8px] font-black text-gray-900 uppercase tracking-widest mb-1">
                                         <Clock size={10} className="text-indigo-400"/> Partnership
                                     </div>
-                                    <p className="text-sm font-black text-gray-900 uppercase tracking-tight truncate">
+                                    <p className="text-sm font-black text-black uppercase tracking-tight truncate">
                                         Active
                                     </p>
                                 </div>
                             </div>
 
                             <div className="space-y-3">
-                                <div className="flex items-center gap-4 text-xs text-gray-500 font-bold uppercase tracking-wide truncate"><div className="p-2 bg-gray-50 rounded-lg text-gray-300"><Mail size={16}/></div> {contact.email}</div>
-                                <div className="flex items-center gap-4 text-xs text-gray-500 font-bold uppercase tracking-wide"><div className="p-2 bg-gray-50 rounded-lg text-gray-300"><Smartphone size={16}/></div> {contact.phone || '0400 123 456'}</div>
+                                <div className="flex items-center gap-4 text-xs text-black font-black uppercase tracking-wide truncate"><div className="p-2 bg-gray-50 rounded-lg text-gray-400"><Mail size={16}/></div> {contact.email}</div>
+                                <div className="flex items-center gap-4 text-xs text-black font-black uppercase tracking-wide"><div className="p-2 bg-gray-50 rounded-lg text-gray-400"><Smartphone size={16}/></div> {contact.phone || '0400 123 456'}</div>
                             </div>
                         </div>
                         <div className="flex gap-2 mt-8">
@@ -362,66 +278,6 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
           </div>
       )}
 
-      {activeTab === 'procurement' && (
-          <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 px-2">
-              <div className="bg-indigo-50 border border-indigo-100 rounded-[2.5rem] p-8 flex items-center gap-6 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-8 opacity-5 transform rotate-12 scale-150"><Clock size={120} className="text-indigo-900"/></div>
-                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm shrink-0 border border-indigo-100"><Clock size={28}/></div>
-                  <div>
-                      <h3 className="text-lg font-black text-indigo-900 uppercase tracking-tight">Active Procurement Track</h3>
-                      <p className="text-indigo-800 text-sm font-medium leading-relaxed max-w-2xl">These are price requests you have sent to regional suppliers. We'll notify you the moment a quote is returned.</p>
-                  </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {procurementRequests.map(req => {
-                      const supplier = mockService.getAllUsers().find(u => u.id === req.supplierId);
-                      return (
-                        <div key={req.id} className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between h-[340px] hover:shadow-xl transition-all group">
-                            <div>
-                                <div className="flex justify-between items-start mb-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-indigo-600 font-black text-lg border border-gray-100 shadow-inner-sm">
-                                            {supplier?.businessName.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <h4 className="font-black text-gray-900 uppercase text-sm leading-none mb-1.5">{supplier?.businessName}</h4>
-                                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{supplier?.role}</p>
-                                        </div>
-                                    </div>
-                                    <span className="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border border-orange-100 animate-pulse">AWAITING QUOTE</span>
-                                </div>
-                                
-                                <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-all">
-                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Requested Variety</p>
-                                    <p className="text-xl font-black text-gray-900 tracking-tight uppercase leading-none">{req.productName}</p>
-                                    <div className="flex items-center gap-4 mt-4">
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><Package size={12}/> {req.quantity}kg</span>
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                                          /* Added missing Calendar icon usage */
-                                          <Calendar size={12}/> {new Date(req.requiredDate).toLocaleDateString()}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button onClick={() => handleConnect(supplier?.businessName || 'Supplier')} className="w-full py-4 bg-white border-2 border-gray-100 text-gray-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-indigo-600 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
-                                <MessageSquare size={16}/> Message Supplier
-                            </button>
-                        </div>
-                      );
-                  })}
-                  {procurementRequests.length === 0 && (
-                      <div className="col-span-full py-40 text-center opacity-30 grayscale">
-                          <ShoppingCart size={80} className="mx-auto mb-6 text-gray-300"/>
-                          <p className="text-lg font-black uppercase tracking-[0.2em] text-gray-400">No pending price requests found</p>
-                          <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Request prices from the Sourcing Hub in your Dashboard</p>
-                      </div>
-                  )}
-              </div>
-          </div>
-      )}
-
       {activeTab === 'suppliers' && (
           <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500 px-2">
             
@@ -430,7 +286,7 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
                     <button
                         key={state}
                         onClick={() => setSelectedState(state)}
-                        className={`flex-1 min-w-[90px] py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shrink-0 ${selectedState === state ? 'bg-[#043003] text-white shadow-lg' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-700'}`}
+                        className={`flex-1 min-w-[90px] py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shrink-0 ${selectedState === state ? 'bg-[#043003] text-white shadow-lg' : 'text-black hover:bg-gray-50'}`}
                     >
                         {state}
                     </button>
@@ -444,24 +300,24 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
                             <ShoppingCart size={28}/>
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-gray-900 tracking-tight uppercase leading-none">{selectedState} Market Directory</h2>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2">Discover potential {selectedState} partners and wholesale buyers</p>
+                            <h2 className="text-2xl font-black text-black uppercase tracking-tight leading-none">{selectedState} Market Directory</h2>
+                            <p className="text-[10px] text-black font-black uppercase tracking-widest mt-2">Discover potential {selectedState} partners and wholesale buyers</p>
                         </div>
                     </div>
                     
                     <div className="bg-emerald-50 px-6 py-2.5 rounded-xl border border-emerald-100 flex items-center gap-2">
                          <Globe size={16} className="text-emerald-600 animate-spin-slow"/>
-                         <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Global Network Discovery</span>
+                         <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Global Discovery</span>
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
                     {filteredMarketSuppliers.length > 0 ? (
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-white border-b border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                            <thead className="bg-white border-b border-gray-100 text-[10px] font-black text-black uppercase tracking-widest">
                                 <tr>
                                     <th className="px-10 py-6">Company Name</th>
-                                    <th className="px-10 py-6">Specialty / Category</th>
+                                    <th className="px-10 py-6">Specialty</th>
                                     <th className="px-10 py-6">Market Location</th>
                                     <th className="px-10 py-6 text-right">Actions</th>
                                 </tr>
@@ -470,34 +326,41 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
                                 {filteredMarketSuppliers.map((supplier, idx) => (
                                     <tr key={idx} className="hover:bg-gray-50 transition-colors group">
                                         <td className="px-10 py-6">
-                                            <div className="font-black text-gray-900 tracking-tight text-base uppercase leading-none">{supplier.name}</div>
-                                            <div className="flex items-center gap-2 mt-1.5">
-                                                <span className="text-[9px] text-indigo-500 font-black uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">{supplier.type}</span>
+                                            <div className="flex items-center gap-5">
+                                                <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-inner-sm shrink-0">
+                                                    <img src={supplier.imageUrl} className="w-full h-full object-cover" alt="" />
+                                                </div>
+                                                <div>
+                                                    <div className="font-black text-black tracking-tight text-base uppercase leading-none group-hover:text-indigo-600 transition-colors">{supplier.name}</div>
+                                                    <div className="flex items-center gap-2 mt-1.5">
+                                                        <span className="text-[9px] text-black font-black uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-xl border border-gray-200 shadow-sm">{supplier.type}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-10 py-6">
-                                            <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border border-gray-200">
+                                            <span className="bg-black text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-black shadow-sm">
                                                 {supplier.specialty}
                                             </span>
                                         </td>
                                         <td className="px-10 py-6">
-                                            <div className="flex items-center gap-1.5 text-xs text-gray-500 font-bold uppercase">
-                                                <MapPin size={12} className="text-gray-300"/> {supplier.location}
+                                            <div className="flex items-center gap-2 text-sm text-black font-black uppercase tracking-tight">
+                                                <MapPin size={16} className="text-indigo-500"/> {supplier.location}
                                             </div>
                                         </td>
                                         <td className="px-10 py-6 text-right">
-                                            <div className="flex justify-end gap-2">
+                                            <div className="flex justify-end gap-3">
                                                 <button 
                                                     onClick={() => triggerNativeSms(supplier.mobile, `Hi ${supplier.name}, contacting you via Platform Zero...`)}
-                                                    className="px-6 py-3 bg-white border-2 border-gray-100 text-gray-400 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm active:scale-95"
+                                                    className="px-8 py-3.5 bg-white border-2 border-black text-black rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] hover:bg-black hover:text-white transition-all shadow-sm active:scale-95"
                                                 >
                                                     Connect
                                                 </button>
                                                 <button 
                                                     onClick={() => setSendProductTarget({ ...supplier, phone: supplier.mobile, businessName: supplier.name })}
-                                                    className="p-3 bg-white border border-gray-200 text-gray-400 hover:text-indigo-600 hover:border-indigo-200 rounded-xl transition-all shadow-sm"
+                                                    className="p-3.5 bg-white border-2 border-gray-200 text-black hover:text-indigo-600 hover:border-indigo-200 rounded-2xl transition-all shadow-sm active:scale-90"
                                                 >
-                                                    <Camera size={18}/>
+                                                    <Camera size={20} strokeWidth={2.5}/>
                                                 </button>
                                             </div>
                                         </td>
@@ -507,9 +370,8 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
                         </table>
                     ) : (
                         <div className="p-24 text-center">
-                            <Globe size={48} className="mx-auto text-gray-100 mb-6"/>
-                            <h3 className="text-xl font-black text-gray-300 uppercase tracking-tight">Accessing {selectedState} Regional Node...</h3>
-                            <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest mt-2">Real-time data for this region is loading.</p>
+                            <Globe size={48} className="mx-auto text-gray-200 mb-6"/>
+                            <h3 className="text-xl font-black text-black uppercase tracking-tight">Accessing Node...</h3>
                         </div>
                     )}
                 </div>
@@ -526,7 +388,6 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
       )}
       <InviteBuyerModal isOpen={isInviteModalOpen} onClose={() => setIsInviteModalOpen(false)} wholesaler={user} />
 
-      {/* Added missing ChatDialog to component for handleConnect functionality */}
       <ChatDialog 
         isOpen={isChatOpen} 
         onClose={() => setIsChatOpen(false)} 
@@ -537,7 +398,3 @@ export const Contacts: React.FC<ContactsProps> = ({ user }) => {
     </div>
   );
 };
-
-const LinkIcon = ({ size = 24, ...props }: any) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-);

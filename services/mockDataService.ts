@@ -37,6 +37,7 @@ export const INDUSTRIES: Industry[] = [
 
 export const USERS_INITIAL: User[] = [
   { id: 'u1', name: 'Admin User', businessName: 'Platform Zero HQ', role: UserRole.ADMIN, email: 'admin@pz.com', favoriteProductIds: [], isConfirmed: true, hasSetCredentials: true },
+  { id: 'r1', name: 'Mark Representative', businessName: 'Platform Zero Rep', role: UserRole.PZ_REP, email: 'mark@rep.com', commissionRate: 5, isConfirmed: true, hasSetCredentials: true },
   { id: 'u2', name: 'Sarah Wholesaler', businessName: 'Fresh Wholesalers Adelaide', role: UserRole.WHOLESALER, email: 'sarah@fresh.com', phone: '0411 111 111', dashboardVersion: 'v2', activeSellingInterests: ['Tomatoes', 'Lettuce', 'Eggplants'], activeBuyingInterests: ['Potatoes', 'Apples', 'Carrots'], businessProfile: { isComplete: true, businessLocation: 'Pooraka, SA' } as any, favoriteProductIds: [], isConfirmed: true, hasSetCredentials: true },
   { id: 'u3', name: 'Bob Farmer', businessName: 'Green Valley Farms', role: UserRole.FARMER, email: 'bob@greenvalley.com', phone: '0422 222 222', dashboardVersion: 'v2', activeSellingInterests: ['Potatoes', 'Apples', 'Tomatoes', 'Carrots'], activeBuyingInterests: [], businessProfile: { isComplete: true, businessLocation: 'Mildura, VIC' } as any, favoriteProductIds: [], isConfirmed: true, hasSetCredentials: true },
   { id: 'u4', name: 'Alice Consumer', businessName: 'The Morning Cafe', role: UserRole.CONSUMER, email: 'alice@cafe.com', phone: '0433 333 333', industry: 'Cafe', smsNotificationsEnabled: true, businessProfile: { isComplete: true, businessLocation: 'Adelaide CBD' } as any, favoriteProductIds: ['p1', 'p2'], isConfirmed: true, hasSetCredentials: true },
@@ -48,37 +49,32 @@ const INITIAL_PRODUCTS: Product[] = [
     { id: 'p2', name: 'Iceberg Lettuce', variety: 'Crisp', category: 'Vegetable', imageUrl: 'https://images.unsplash.com/photo-1622206141855-8979313f8981?auto=format&fit=crop&q=80&w=400', defaultPricePerKg: 3.20, unit: 'KG', co2SavingsPerKg: 0.8 },
     { id: 'p3', name: 'Dutch Cream Potatoes', variety: 'Creamy', category: 'Vegetable', imageUrl: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&q=80&w=400', defaultPricePerKg: 2.80, unit: 'KG', co2SavingsPerKg: 0.5 },
     { id: 'p4', name: 'Pink Lady Apples', variety: 'Export Grade', category: 'Fruit', imageUrl: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&q=80&w=400', defaultPricePerKg: 5.50, unit: 'KG', co2SavingsPerKg: 1.5 },
-    { id: 'p5', name: 'Black Eggplant', variety: 'Standard', category: 'Vegetable', imageUrl: 'https://images.unsplash.com/photo-1528137858141-866416f91f75?auto=format&fit=crop&q=80&w=400', defaultPricePerKg: 6.20, unit: 'KG', co2SavingsPerKg: 0.9 },
+    { id: 'p5', name: 'Black Eggplant', variety: 'Standard', category: 'Vegetable', imageUrl: 'https://images.unsplash.com/photo-1528137858141-866416f91f75?auto=format&fit=crop&q=80&w=400&h=400', defaultPricePerKg: 6.20, unit: 'KG', co2SavingsPerKg: 0.9 },
     { id: 'p6', name: 'Nantes Carrots', variety: 'Heirloom', category: 'Vegetable', imageUrl: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=400', defaultPricePerKg: 3.90, unit: 'KG', co2SavingsPerKg: 0.7 },
 ];
 
 const INITIAL_INVENTORY: InventoryItem[] = [
-    // Sarah (u2) has some stock but a deficit for Tomatoes
     { id: 'inv1', ownerId: 'u2', productId: 'p1', lotNumber: 'PZ-LOT-1001', quantityKg: 30, status: 'Available', uploadedAt: new Date().toISOString(), harvestDate: new Date().toISOString(), expiryDate: new Date(Date.now() + 86400000 * 5).toISOString(), warehouseLocation: 'Bin A1' },
     { id: 'inv2', ownerId: 'u2', productId: 'p2', lotNumber: 'PZ-LOT-1002', quantityKg: 80, status: 'Available', uploadedAt: new Date().toISOString(), harvestDate: new Date().toISOString(), expiryDate: new Date(Date.now() + 86400000 * 3).toISOString(), warehouseLocation: 'Bin B4' },
-    // Bob (u3) has plenty of Tomatoes and Potatoes (Sourcing targets)
     { id: 'inv3', ownerId: 'u3', productId: 'p1', lotNumber: 'PZ-LOT-2001', quantityKg: 500, status: 'Available', uploadedAt: new Date().toISOString(), harvestDate: new Date().toISOString(), expiryDate: new Date(Date.now() + 86400000 * 7).toISOString(), harvestLocation: 'Mildura Field 4', logisticsPrice: 15.00 },
     { id: 'inv4', ownerId: 'u3', productId: 'p3', lotNumber: 'PZ-LOT-2002', quantityKg: 1200, status: 'Available', uploadedAt: new Date().toISOString(), harvestDate: new Date().toISOString(), expiryDate: new Date(Date.now() + 86400000 * 14).toISOString(), harvestLocation: 'Mildura Field 1', logisticsPrice: 25.00 },
     { id: 'inv5', ownerId: 'u3', productId: 'p6', lotNumber: 'PZ-LOT-2003', quantityKg: 300, status: 'Available', uploadedAt: new Date().toISOString(), harvestDate: new Date().toISOString(), expiryDate: new Date(Date.now() + 86400000 * 6).toISOString(), harvestLocation: 'Mildura Field 2', logisticsPrice: 10.00 },
 ];
 
 const INITIAL_CUSTOMERS: Customer[] = [
-    { id: 'u4', businessName: 'The Morning Cafe', contactName: 'Alice Consumer', email: 'alice@cafe.com', phone: '0433 333 333', category: 'Cafe', location: 'Adelaide CBD', connectedSupplierId: 'u2', connectedSupplierName: 'Fresh Wholesalers Adelaide', connectionStatus: 'Active', pzMarkup: 15, pzPaymentTermsDays: 7, commonProducts: 'Tomatoes, Lettuce, Avocado' },
-    { id: 'u5', businessName: 'Local Corner Grocers', contactName: 'Gary Grocer', email: 'gary@grocer.com', phone: '0444 444 444', category: 'Grocery Store', location: 'Glenelg, SA', connectedSupplierId: 'u2', connectedSupplierName: 'Fresh Wholesalers Adelaide', connectionStatus: 'Active', pzMarkup: 12, pzPaymentTermsDays: 14, commonProducts: 'Potatoes, Carrots, Onions' },
+    { id: 'u4', businessName: 'The Morning Cafe', contactName: 'Alice Consumer', email: 'alice@cafe.com', phone: '0433 333 333', category: 'Cafe', location: 'Adelaide CBD', connectedSupplierId: 'u2', connectedSupplierName: 'Fresh Wholesalers Adelaide', connectionStatus: 'Active', pzMarkup: 15, pzPaymentTermsDays: 7, commonProducts: 'Tomatoes, Lettuce, Avocado', assignedPzRepId: 'r1', assignedPzRepName: 'Mark Representative' },
+    { id: 'u5', businessName: 'Local Corner Grocers', contactName: 'Gary Grocer', email: 'gary@grocer.com', phone: '0444 444 444', category: 'Grocery Store', location: 'Glenelg, SA', connectedSupplierId: 'u2', connectedSupplierName: 'Fresh Wholesalers Adelaide', connectionStatus: 'Active', pzMarkup: 12, pzPaymentTermsDays: 14, commonProducts: 'Potatoes, Carrots, Onions', assignedPzRepId: 'r1', assignedPzRepName: 'Mark Representative' },
 ];
 
 const INITIAL_ORDERS: Order[] = [
-    // Today's Orders for Sarah (u2) from Alice (u4)
     { id: 'o-101', buyerId: 'u4', sellerId: 'u2', status: 'Pending', date: new Date().toISOString(), totalAmount: 325.00, items: [
-        { productId: 'p1', quantityKg: 50, pricePerKg: 4.50 }, // Sarah only has 30kg -> Deficit!
+        { productId: 'p1', quantityKg: 50, pricePerKg: 4.50 },
         { productId: 'p2', quantityKg: 20, pricePerKg: 3.20 },
     ], paymentStatus: 'Unpaid', source: 'Marketplace' },
-    // A confirmed order
     { id: 'o-102', buyerId: 'u5', sellerId: 'u2', status: 'Confirmed', date: new Date().toISOString(), totalAmount: 185.00, items: [
         { productId: 'p5', quantityKg: 10, pricePerKg: 6.20 },
         { productId: 'p2', quantityKg: 30, pricePerKg: 3.20 },
     ], paymentStatus: 'Unpaid', source: 'Direct', confirmedAt: new Date().toISOString() },
-    // A delivered order for history
     { id: 'o-103', buyerId: 'u4', sellerId: 'u2', status: 'Delivered', date: new Date(Date.now() - 86400000).toISOString(), totalAmount: 450.00, items: [
         { productId: 'p1', quantityKg: 100, pricePerKg: 4.50 }
     ], paymentStatus: 'Paid', source: 'Marketplace', deliveredAt: new Date(Date.now() - 43200000).toISOString() },
@@ -167,7 +163,109 @@ class MockDataService {
     }
   }
 
-  // --- COMMUNICATION LEDGER ---
+  /* Added missing methods to handle various application flows */
+
+  generateLotId() {
+    return 'LOT-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+  }
+
+  updateProductPrice(id: string, price: number) {
+    const p = this.products.find(prod => prod.id === id);
+    if (p) { p.defaultPricePerKg = price; this.saveToStorage(); }
+  }
+
+  hasOutstandingInvoices(userId: string): boolean {
+    return this.orders.some(o => o.buyerId === userId && (o.paymentStatus === 'Unpaid' || o.paymentStatus === 'Overdue'));
+  }
+
+  toggleFavorite(userId: string, productId: string) {
+    const user = this.users.find(u => u.id === userId);
+    if (user) {
+      if (!user.favoriteProductIds) user.favoriteProductIds = [];
+      if (user.favoriteProductIds.includes(productId)) {
+        user.favoriteProductIds = user.favoriteProductIds.filter(id => id !== productId);
+      } else {
+        user.favoriteProductIds.push(productId);
+      }
+      this.saveToStorage();
+    }
+  }
+
+  getRegistrationRequests() {
+    return this.registrationRequests;
+  }
+
+  rejectRegistration(id: string) {
+    const req = this.registrationRequests.find(r => r.id === id);
+    if (req) {
+      req.status = 'Rejected';
+      this.saveToStorage();
+    }
+  }
+
+  getDrivers(wholesalerId: string) {
+    return this.drivers.filter(d => d.wholesalerId === wholesalerId);
+  }
+
+  addDriver(driver: Driver) {
+    this.drivers.push(driver);
+    this.saveToStorage();
+  }
+
+  getDriverOrders(driverId: string) {
+    const driver = this.drivers.find(d => d.id === driverId);
+    if (!driver) return [];
+    return this.orders.filter(o => o.logistics?.driverName === driver.name && o.status === 'Shipped');
+  }
+
+  updateIndustryIncentive(industry: Industry, value: number) {
+    this.industryIncentives[industry] = value;
+    this.saveToStorage();
+  }
+
+  getWholesalers() {
+    return this.users.filter(u => u.role === UserRole.WHOLESALER);
+  }
+
+  submitSignup(data: any) {
+    const req: RegistrationRequest = {
+      id: `reg-${Date.now()}`,
+      businessName: data.businessName,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      mobile: data.mobile,
+      requestedRole: data.requestedRole,
+      status: 'Pending',
+      submittedDate: new Date().toISOString()
+    };
+    this.registrationRequests.push(req);
+    this.saveToStorage();
+  }
+
+  getPackers(wholesalerId: string) {
+    return this.packers.filter(p => p.wholesalerId === wholesalerId);
+  }
+
+  addPacker(packer: Packer) {
+    this.packers.push(packer);
+    this.saveToStorage();
+  }
+
+  getPackerOrders(packerId: string) {
+    const packer = this.packers.find(p => p.id === packerId);
+    if (!packer) return [];
+    return this.orders.filter(o => o.logistics?.instructions?.includes(`Packed by ${packer.name}`) && o.status === 'Confirmed');
+  }
+
+  sendOnboardingComms(customerId: string) {
+    console.log(`Comms sent to ${customerId}`);
+  }
+
+  uploadToDeli(data: any, businessName: string) {
+    console.log(`Product ${data.productName} uploaded to Deli by ${businessName}`);
+  }
+
   logCommunication(log: any) {
     this.communicationLogs.unshift(log);
     this.saveToStorage();
@@ -178,7 +276,6 @@ class MockDataService {
     return this.communicationLogs;
   }
 
-  // --- REFINED LOGIN LOGIC ---
   verifyCodeLogin(code: string): User | null {
     this.loadFromStorage();
     const cleanCode = code.toUpperCase().trim();
@@ -200,23 +297,14 @@ class MockDataService {
           // @ts-ignore
           incentiveBalance: bonus
         };
+        // @ts-ignore
+        if (req.commissionRate) user.commissionRate = req.commissionRate;
         this.users.push(user);
         this.saveToStorage();
       }
       return user;
     }
     return null;
-  }
-
-  verifyPasswordLogin(email: string, password?: string): User | null {
-      this.loadFromStorage();
-      const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
-      // For mock purposes, we allow login if user exists and has set credentials. 
-      // In a real app, we'd verify the hashed password.
-      if (user && user.hasSetCredentials) {
-          return user;
-      }
-      return null;
   }
 
   createManualPortalInvite(data: any) {
@@ -245,7 +333,9 @@ class MockDataService {
       requestedRole: data.role,
       status: 'Approved',
       submittedDate: invite.createdAt,
-      temporaryCode: code
+      temporaryCode: code,
+      // @ts-ignore
+      commissionRate: data.commissionRate
     };
     this.registrationRequests.push(req);
 
@@ -261,7 +351,8 @@ class MockDataService {
       isConfirmed: false,
       hasSetCredentials: false,
       // @ts-ignore
-      incentiveBalance: bonus
+      incentiveBalance: bonus,
+      commissionRate: data.commissionRate
     };
     this.users.push(newUser);
     this.saveToStorage();
@@ -288,9 +379,7 @@ class MockDataService {
 
   getAllUsers() { return this.users; }
   getPzRepresentatives() { return this.users.filter(u => u.role === UserRole.PZ_REP); }
-  getWholesalers() { return this.users.filter(u => u.role === UserRole.WHOLESALER); }
   getOrders(userId: string) { return this.orders; }
-  getRegistrationRequests() { return this.registrationRequests; }
   getCustomers() { return this.customers; }
   getInventory(userId: string) { return this.inventory.filter(i => i.ownerId === userId); }
   getAllInventory() { return this.inventory; }
@@ -323,8 +412,6 @@ class MockDataService {
     return order;
   }
 
-  generateLotId() { return `PZ-LOT-${1000 + this.inventory.length + 1}`; }
-  
   updateUserInterests(id: string, selling: string[], buying: string[]) {
     const u = this.users.find(user => user.id === id);
     if (u) {
@@ -345,18 +432,6 @@ class MockDataService {
 
   getProcurementRequests(userId: string) {
     return this.procurementRequests.filter(r => r.buyerId === userId || r.supplierId === userId);
-  }
-
-  toggleFavorite(userId: string, productId: string) {
-    const u = this.users.find(user => user.id === userId);
-    if (!u) return;
-    if (!u.favoriteProductIds) u.favoriteProductIds = [];
-    if (u.favoriteProductIds.includes(productId)) {
-        u.favoriteProductIds = u.favoriteProductIds.filter(id => id !== productId);
-    } else {
-        u.favoriteProductIds.push(productId);
-    }
-    this.saveToStorage();
   }
 
   markOrderAsPaid(id: string, receiptUrl: string) {
@@ -429,10 +504,6 @@ class MockDataService {
     );
   }
 
-  hasOutstandingInvoices(userId: string) {
-    return this.orders.some(o => o.buyerId === userId && o.paymentStatus === 'Overdue');
-  }
-
   addAppNotification(userId: string, title: string, message: string, type: any) {
     this.notifications.push({
         id: `notif-${Date.now()}`,
@@ -467,18 +538,6 @@ class MockDataService {
     this.saveToStorage();
   }
 
-  submitSignup(data: any) {
-    const req: RegistrationRequest = {
-        id: `req-${Date.now()}`,
-        ...data,
-        status: 'Pending',
-        submittedDate: new Date().toISOString()
-    };
-    this.registrationRequests.push(req);
-    this.saveToStorage();
-    return req;
-  }
-
   approveRegistration(id: string) {
     const req = this.registrationRequests.find(r => r.id === id);
     if (req) {
@@ -486,11 +545,6 @@ class MockDataService {
       if (!req.temporaryCode) { req.temporaryCode = Math.random().toString(36).substring(2, 8).toUpperCase(); }
       this.saveToStorage();
     }
-  }
-
-  rejectRegistration(id: string) {
-    const req = this.registrationRequests.find(r => r.id === id);
-    if (req) { req.status = 'Rejected'; this.saveToStorage(); }
   }
 
   updateCustomerMarkup(id: string, markup: number) {
@@ -515,29 +569,6 @@ class MockDataService {
     if (p) { p.defaultPricePerKg = price; p.unit = unit; this.saveToStorage(); }
   }
 
-  updateProductPrice(id: string, price: number) {
-    const p = this.products.find(prod => prod.id === id);
-    if (p) { p.defaultPricePerKg = price; this.saveToStorage(); }
-  }
-
-  getDrivers(whId: string) { return this.drivers.filter(d => d.wholesalerId === whId); }
-  addDriver(d: Driver) { this.drivers.push(d); this.saveToStorage(); }
-  
-  getDriverOrders(dId: string) {
-    const driver = this.drivers.find(d => d.id === dId);
-    if (!driver) return [];
-    return this.orders.filter(o => o.logistics?.driverName === driver.name && o.status === 'Shipped');
-  }
-
-  getPackers(whId: string) { return this.packers.filter(p => p.wholesalerId === whId); }
-  addPacker(p: Packer) { this.packers.push(p); this.saveToStorage(); }
-  
-  getPackerOrders(pkId: string) {
-    const packer = this.packers.find(p => p.id === pkId);
-    if (!packer) return [];
-    return this.orders.filter(o => o.status === 'Confirmed' && o.sellerId === packer.wholesalerId);
-  }
-
   addEmployee(u: User) { this.users.push(u); this.saveToStorage(); }
 
   updateUserVersion(id: string, v: 'v1' | 'v2') {
@@ -551,15 +582,13 @@ class MockDataService {
   }
 
   getIndustryIncentives() { return this.industryIncentives; }
-  updateIndustryIncentive(ind: Industry, val: number) {
-    this.industryIncentives[ind] = val;
-    this.saveToStorage();
-  }
-
   getRepCustomers(repId: string) { return this.customers.filter(c => c.assignedPzRepId === repId); }
   
   getRepIssues(repId: string) {
-    return this.orders.filter(o => o.issue && o.issue.assignedRepId === repId);
+    return this.orders.filter(o => {
+        const customer = this.customers.find(c => c.id === o.buyerId);
+        return customer?.assignedPzRepId === repId && o.issue;
+    });
   }
 
   getRepStats(repId: string) {
@@ -567,8 +596,10 @@ class MockDataService {
         const customer = this.customers.find(c => c.id === o.buyerId);
         return customer?.assignedPzRepId === repId;
     });
-    const commissionMade = repOrders.filter(o => o.paymentStatus === 'Paid').reduce((sum, o) => sum + (o.totalAmount * 0.05), 0);
-    const commissionComing = repOrders.filter(o => o.paymentStatus !== 'Paid').reduce((sum, o) => sum + (o.totalAmount * 0.05), 0);
+    const repUser = this.users.find(u => u.id === repId);
+    const rate = (repUser?.commissionRate || 5) / 100;
+    const commissionMade = repOrders.filter(o => o.paymentStatus === 'Paid').reduce((sum, o) => sum + (o.totalAmount * rate), 0);
+    const commissionComing = repOrders.filter(o => o.paymentStatus !== 'Paid').reduce((sum, o) => sum + (o.totalAmount * rate), 0);
     return {
         totalSales: repOrders.reduce((sum, o) => sum + o.totalAmount, 0),
         commissionMade,
@@ -621,6 +652,7 @@ class MockDataService {
       hasSetCredentials: true,
       businessProfile: { isComplete: true, businessLocation: data.address, abn: data.abn } as any
     };
+    if (data.commissionRate) newUser.commissionRate = data.commissionRate;
     this.users.push(newUser);
     this.saveToStorage();
     return newUser;
@@ -656,14 +688,10 @@ class MockDataService {
     return null;
   }
 
-  sendOnboardingComms(customerId: string) { console.debug("Onboarding comms sent for", customerId); }
-
   updateInventoryStatus(id: string, status: any) {
     const item = this.inventory.find(i => i.id === id);
     if (item) { item.status = status; this.saveToStorage(); }
   }
-
-  uploadToDeli(data: any, businessName: string) { console.debug("Uploaded to deli", data, businessName); }
 
   updateSupplierPriceRequestResponse(requestId: string, items: SupplierPriceRequestItem[]) {
     const req = this.supplierPriceRequests.find(r => r.id === requestId);

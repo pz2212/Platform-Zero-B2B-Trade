@@ -51,46 +51,46 @@ const CustomerOpsModal = ({ isOpen, onClose, customer, allOrders, products, allU
                             {customer.businessName.charAt(0)}
                         </div>
                         <div>
-                            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter leading-none">{customer.businessName}</h2>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
+                            <h2 className="text-3xl font-black text-black uppercase tracking-tighter leading-none">{customer.businessName}</h2>
+                            <p className="text-[10px] text-black font-black uppercase tracking-widest mt-2 flex items-center gap-2">
                                 <MapPin size={12}/> {customer.location || 'Market Location'} • <Store size={12}/> Supplier: {supplier?.businessName || 'Platform Zero Network'}
                             </p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-3 bg-white hover:bg-gray-100 rounded-full border border-gray-100 shadow-sm transition-all text-gray-300 hover:text-gray-900">
+                    <button onClick={onClose} className="p-3 bg-white hover:bg-gray-100 rounded-full border border-gray-100 shadow-sm transition-all text-black">
                         <X size={28} strokeWidth={2.5}/>
                     </button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-8 md:p-10 custom-scrollbar space-y-10 bg-white">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="bg-gray-50/80 p-5 rounded-3xl border border-gray-100">
-                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Lifetime Trade</p>
-                            <p className="text-2xl font-black text-gray-900 tracking-tighter">${customerOrders.reduce((sum, o) => sum + o.totalAmount, 0).toLocaleString()}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="bg-gray-50 p-5 rounded-3xl border border-gray-200">
+                            <p className="text-[9px] font-black text-black uppercase tracking-widest mb-1">Lifetime Trade</p>
+                            <p className="text-xl font-black text-black tracking-tighter">${customerOrders.reduce((sum, o) => sum + o.totalAmount, 0).toLocaleString()}</p>
                         </div>
-                        <div className="bg-gray-50/80 p-5 rounded-3xl border border-gray-100">
-                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Active Logistics</p>
-                            <p className="text-2xl font-black text-indigo-600 tracking-tighter">{customerOrders.filter(o => !['Delivered', 'Cancelled'].includes(o.status)).length} Run(s)</p>
+                        <div className="bg-gray-50 p-5 rounded-3xl border border-gray-200">
+                            <p className="text-[9px] font-black text-black uppercase tracking-widest mb-1">Active Run(s)</p>
+                            <p className="text-xl font-black text-indigo-700 tracking-tighter">{customerOrders.filter(o => !['Delivered', 'Cancelled'].includes(o.status)).length}</p>
                         </div>
-                        <div className="bg-gray-50/80 p-5 rounded-3xl border border-gray-100">
-                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Profit Generation</p>
-                            <p className="text-2xl font-black text-emerald-600 tracking-tighter">${(customerOrders.reduce((sum, o) => sum + o.totalAmount, 0) * ((customer.pzMarkup || 15)/100)).toLocaleString()}</p>
+                        <div className="bg-gray-50 p-5 rounded-3xl border border-gray-200">
+                            <p className="text-[9px] font-black text-black uppercase tracking-widest mb-1">Profit</p>
+                            <p className="text-xl font-black text-emerald-700 tracking-tighter">${(customerOrders.reduce((sum, o) => sum + o.totalAmount, 0) * ((customer.pzMarkup || 15)/100)).toFixed(0)}</p>
                         </div>
-                        <div className="bg-gray-50/80 p-5 rounded-3xl border border-gray-100">
-                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Markup Tier</p>
-                            <p className="text-2xl font-black text-gray-900 tracking-tighter">{customer.pzMarkup || 15}%</p>
+                        <div className="bg-gray-50 p-5 rounded-3xl border border-gray-200">
+                            <p className="text-[9px] font-black text-black uppercase tracking-widest mb-1">Margin Tier</p>
+                            <p className="text-xl font-black text-black tracking-tighter">{customer.pzMarkup || 15}%</p>
                         </div>
                     </div>
 
                     <div className="space-y-6">
-                        <h3 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] flex items-center gap-2 px-1">
+                        <h3 className="text-sm font-black text-black uppercase tracking-[0.2em] flex items-center gap-2 px-1">
                             <History size={18} className="text-indigo-500"/> Order Fulfillment Timeline
                         </h3>
 
                         {customerOrders.length === 0 ? (
                             <div className="py-20 text-center bg-gray-50 rounded-[2.5rem] border border-dashed border-gray-200">
                                 <Package size={48} className="mx-auto text-gray-200 mb-4"/>
-                                <p className="text-sm font-black text-gray-400 uppercase tracking-widest">No orders found for this entity</p>
+                                <p className="text-sm font-black text-gray-400 uppercase tracking-widest">No orders found</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -100,7 +100,7 @@ const CustomerOpsModal = ({ isOpen, onClose, customer, allOrders, products, allU
                                     const currentSupplier = allUsers.find(u => u.id === order.sellerId);
 
                                     return (
-                                        <div key={order.id} className={`bg-white rounded-[2rem] border transition-all overflow-hidden ${isExpanded ? 'border-indigo-600 shadow-xl' : 'border-gray-100 hover:border-indigo-200 shadow-sm'}`}>
+                                        <div key={order.id} className={`bg-white rounded-[2rem] border transition-all overflow-hidden ${isExpanded ? 'border-gray-900 shadow-xl' : 'border-gray-100 hover:border-indigo-200 shadow-sm'}`}>
                                             <div 
                                                 onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
                                                 className="p-6 flex flex-col md:flex-row justify-between items-center gap-6 cursor-pointer"
@@ -110,29 +110,25 @@ const CustomerOpsModal = ({ isOpen, onClose, customer, allOrders, products, allU
                                                         <ShoppingCart size={24}/>
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-black text-gray-900 text-lg tracking-tight uppercase leading-none mb-1.5">INV-{order.id.split('-').pop()}</h4>
-                                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Logged: {new Date(order.date).toLocaleDateString()} @ {new Date(order.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                                                        <h4 className="font-black text-black text-lg tracking-tight uppercase leading-none mb-1.5">INV-{order.id.split('-').pop()}</h4>
+                                                        <p className="text-[10px] text-black font-black uppercase tracking-widest">Logged: {new Date(order.date).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
 
                                                 <div className="flex items-center gap-10">
-                                                    <div className="text-right hidden lg:block">
-                                                        <p className="text-[8px] font-black text-gray-300 uppercase tracking-widest mb-1">Assigned Partner</p>
-                                                        <p className="text-xs font-black text-gray-900 uppercase tracking-tight truncate max-w-[120px]">{currentSupplier?.businessName}</p>
-                                                    </div>
                                                     <div className="text-right">
-                                                        <p className="text-[8px] font-black text-gray-300 uppercase tracking-widest mb-1">Status</p>
+                                                        <p className="text-[8px] font-black text-black uppercase tracking-widest mb-1">Status</p>
                                                         <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase border tracking-widest shadow-sm ${
-                                                            order.status === 'Delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
-                                                            order.status === 'Confirmed' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-                                                            'bg-orange-50 text-orange-700 border-orange-100'
+                                                            order.status === 'Delivered' ? 'bg-emerald-600 text-white border-emerald-600' :
+                                                            order.status === 'Confirmed' ? 'bg-blue-600 text-white border-blue-600' :
+                                                            'bg-orange-600 text-white border-orange-600'
                                                         }`}>{order.status}</span>
                                                     </div>
                                                     <div className="text-right w-24">
-                                                        <p className="text-[8px] font-black text-gray-300 uppercase tracking-widest mb-1">Amount</p>
-                                                        <p className="text-xl font-black text-gray-900 tracking-tighter">${order.totalAmount.toFixed(2)}</p>
+                                                        <p className="text-[8px] font-black text-black uppercase tracking-widest mb-1">Amount</p>
+                                                        <p className="text-xl font-black text-black tracking-tighter">${order.totalAmount.toFixed(2)}</p>
                                                     </div>
-                                                    <div className={`p-2 rounded-full transition-transform duration-300 ${isExpanded ? 'rotate-180 bg-indigo-50 text-indigo-600' : 'bg-gray-50 text-gray-300'}`}>
+                                                    <div className={`p-2 rounded-full transition-transform duration-300 ${isExpanded ? 'rotate-180 bg-gray-900 text-white' : 'bg-gray-100 text-black'}`}>
                                                         <ChevronDown size={20}/>
                                                     </div>
                                                 </div>
@@ -140,35 +136,9 @@ const CustomerOpsModal = ({ isOpen, onClose, customer, allOrders, products, allU
 
                                             {isExpanded && (
                                                 <div className="bg-gray-50/50 border-t border-gray-100 p-8 space-y-10 animate-in slide-in-from-top-4 duration-300">
-                                                    <div className="space-y-6">
-                                                        <h5 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                                                            <Timer size={14}/> FULFILLMENT AUDIT TRAIL
-                                                        </h5>
-                                                        <div className="flex justify-between items-start relative px-4">
-                                                            <div className="absolute top-5 left-10 right-10 h-0.5 bg-gray-200 z-0"></div>
-                                                            {steps.map((step, idx) => {
-                                                                const Icon = step.icon;
-                                                                const isComplete = !!step.time;
-                                                                return (
-                                                                    <div key={idx} className="flex flex-col items-center flex-1 relative z-10">
-                                                                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 border-4 ${
-                                                                            isComplete ? 'bg-emerald-600 border-white text-white shadow-xl shadow-emerald-100' : 'bg-white border-gray-100 text-gray-200 shadow-sm'
-                                                                        }`}>
-                                                                            <Icon size={18} strokeWidth={isComplete ? 3 : 2}/>
-                                                                        </div>
-                                                                        <span className={`text-[9px] font-black uppercase tracking-widest mt-3 ${isComplete ? 'text-gray-900' : 'text-gray-300'}`}>{step.label}</span>
-                                                                        {isComplete && (
-                                                                            <p className="text-[8px] font-bold text-gray-400 mt-1">{new Date(step.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
-                                                                        )}
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-inner-sm">
+                                                    <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-inner-sm">
                                                         <table className="w-full text-left">
-                                                            <thead className="bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">
+                                                            <thead className="bg-gray-50 text-[9px] font-black text-black uppercase tracking-widest border-b border-gray-100">
                                                                 <tr>
                                                                     <th className="px-6 py-4">Market Variety</th>
                                                                     <th className="px-6 py-4 text-center">Volume</th>
@@ -183,20 +153,20 @@ const CustomerOpsModal = ({ isOpen, onClose, customer, allOrders, products, allU
                                                                         <tr key={iIdx}>
                                                                             <td className="px-6 py-4">
                                                                                 <div className="flex items-center gap-3">
-                                                                                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-50 shrink-0">
+                                                                                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 shrink-0">
                                                                                         <img src={p?.imageUrl} className="w-full h-full object-cover" />
                                                                                     </div>
-                                                                                    <span className="font-black text-gray-800 text-xs uppercase tracking-tight">{p?.name || 'Unknown Produce'}</span>
+                                                                                    <span className="font-black text-black text-xs uppercase tracking-tight">{p?.name || 'Unknown'}</span>
                                                                                 </div>
                                                                             </td>
-                                                                            <td className="px-6 py-4 text-center font-bold text-gray-500 text-xs">{item.quantityKg}{p?.unit || 'kg'}</td>
-                                                                            <td className="px-6 py-4 text-right font-black text-indigo-400 text-xs">${item.pricePerKg.toFixed(2)}</td>
-                                                                            <td className="px-6 py-4 text-right font-black text-indigo-600 text-sm">${(item.quantityKg * item.pricePerKg).toFixed(2)}</td>
+                                                                            <td className="px-6 py-4 text-center font-black text-black text-xs">{item.quantityKg}{p?.unit || 'kg'}</td>
+                                                                            <td className="px-6 py-4 text-right font-black text-indigo-700 text-xs">${item.pricePerKg.toFixed(2)}</td>
+                                                                            <td className="px-6 py-4 text-right font-black text-black text-sm">${(item.quantityKg * item.pricePerKg).toFixed(2)}</td>
                                                                         </tr>
                                                                     );
                                                                 })}
                                                             </tbody>
-                                                            <tfoot className="bg-indigo-50/30 font-black text-xs uppercase tracking-widest text-indigo-700">
+                                                            <tfoot className="bg-gray-900 font-black text-xs uppercase tracking-widest text-white">
                                                                 <tr>
                                                                     <td colSpan={3} className="px-6 py-4 text-right">Invoice Total</td>
                                                                     <td className="px-6 py-4 text-right text-base tracking-tighter">${order.totalAmount.toFixed(2)}</td>
@@ -215,8 +185,8 @@ const CustomerOpsModal = ({ isOpen, onClose, customer, allOrders, products, allU
                 </div>
 
                 <div className="p-8 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center shrink-0">
-                    <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.3em]">Platform Zero Operations Protocol v3.1</p>
-                    <button onClick={onClose} className="px-12 py-3.5 bg-[#0F172A] hover:bg-black text-white rounded-xl font-black uppercase tracking-widest text-[10px] shadow-xl transition-all active:scale-95">Return to Control Center</button>
+                    <p className="text-[9px] font-black text-black uppercase tracking-[0.3em]">Protocol v3.2 High Visibility</p>
+                    <button onClick={onClose} className="px-12 py-3.5 bg-black text-white rounded-xl font-black uppercase tracking-widest text-[10px] shadow-xl transition-all">Close</button>
                 </div>
             </div>
         </div>
@@ -242,10 +212,10 @@ const RepAssignmentModal = ({ isOpen, onClose, customer, reps, onUpdate }: { isO
             <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
                 <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <div>
-                        <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Assign Sales Rep</h2>
-                        <p className="text-xs text-gray-400 font-black uppercase tracking-widest mt-1">{customer.businessName}</p>
+                        <h2 className="text-xl font-black text-black uppercase tracking-tight">Assign Sales Rep</h2>
+                        <p className="text-[10px] text-black font-black uppercase tracking-widest mt-1">{customer.businessName}</p>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-2"><X size={24}/></button>
+                    <button onClick={onClose} className="text-black hover:text-gray-600 p-2"><X size={24}/></button>
                 </div>
                 
                 <div className="p-6 space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
@@ -254,15 +224,15 @@ const RepAssignmentModal = ({ isOpen, onClose, customer, reps, onUpdate }: { isO
                             key={rep.id}
                             onClick={() => handleAssign(rep.id)}
                             disabled={isSaving}
-                            className={`w-full flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${customer.assignedPzRepId === rep.id ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-gray-50 hover:border-indigo-100 bg-white'}`}
+                            className={`w-full flex items-center justify-between p-5 rounded-2xl border-2 transition-all group ${customer.assignedPzRepId === rep.id ? 'border-indigo-600 bg-indigo-50 shadow-sm' : 'border-gray-100 hover:border-indigo-100 bg-white'}`}
                         >
                             <div className="flex items-center gap-4">
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm ${customer.assignedPzRepId === rep.id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm ${customer.assignedPzRepId === rep.id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-black'}`}>
                                     {rep.name.charAt(0)}
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-black text-gray-900 uppercase text-xs">{rep.name}</p>
-                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Market Representative</p>
+                                    <p className="font-black text-black uppercase text-xs">{rep.name}</p>
+                                    <p className="text-[10px] text-black font-black uppercase tracking-widest">Platform Rep</p>
                                 </div>
                             </div>
                             {customer.assignedPzRepId === rep.id && <CheckCircle size={20} className="text-indigo-600"/>}
@@ -299,104 +269,41 @@ const MarkupEditorModal = ({ isOpen, onClose, customer, onUpdate }: { isOpen: bo
             <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
                 <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                     <div>
-                        <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Configure PZ Markup</h2>
-                        <p className="text-xs text-gray-400 font-black uppercase tracking-widest mt-1">{customer.businessName}</p>
+                        <h2 className="text-xl font-black text-black uppercase tracking-tight">Configure PZ Markup</h2>
+                        <p className="text-[10px] text-black font-black uppercase tracking-widest mt-1">{customer.businessName}</p>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-2"><X size={24}/></button>
+                    <button onClick={onClose} className="text-black hover:text-gray-600 p-2"><X size={24}/></button>
                 </div>
                 
                 <form onSubmit={handleSave} className="p-10 space-y-8">
                     <div className="space-y-6">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Platform Sales Margin (%)</label>
+                            <label className="block text-[10px] font-black text-black uppercase tracking-widest mb-3 ml-1">Platform Sales Margin (%)</label>
                             <div className="relative group">
-                                <Percent className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors" size={24}/>
+                                <Percent className="absolute left-4 top-1/2 -translate-y-1/2 text-black group-focus-within:text-emerald-500 transition-colors" size={24}/>
                                 <input 
                                     required 
                                     type="number" 
                                     step="0.1"
-                                    className="w-full pl-14 pr-6 py-6 bg-gray-50 border-2 border-gray-100 rounded-[1.75rem] font-black text-4xl text-gray-900 outline-none focus:bg-white focus:border-emerald-500 transition-all shadow-inner-sm" 
+                                    className="w-full pl-14 pr-6 py-6 bg-gray-50 border-2 border-gray-200 rounded-[1.75rem] font-black text-4xl text-black outline-none focus:bg-white focus:border-emerald-500 transition-all shadow-inner-sm" 
                                     value={markup} 
                                     onChange={e => setMarkup(e.target.value)} 
                                 />
                             </div>
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-4 flex items-center gap-2">
-                                <Info size={12}/> This markup is applied to all source prices for this buyer.
-                            </p>
                         </div>
                     </div>
 
                     <button 
                         type="submit"
                         disabled={isSaving}
-                        className="w-full py-5 bg-[#043003] text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-emerald-100 hover:bg-black transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                        className="w-full py-5 bg-[#043003] text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl hover:bg-black transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                     >
-                        {isSaving ? <Loader2 className="animate-spin" size={20}/> : <><CheckCircle size={20}/> Update Trade Logic</>}
+                        {isSaving ? <Loader2 className="animate-spin" size={20}/> : <><CheckCircle size={20}/> Update Logic</>}
                     </button>
                 </form>
             </div>
         </div>
     );
-};
-
-const ActionDropdown = ({ entity, onEditMarkup, onAssignRep, onViewOps }: { entity: any, onEditMarkup: (c: any) => void, onAssignRep: (c: any) => void, onViewOps: (c: any) => void }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleAction = (label: string) => {
-      setIsOpen(false);
-      if (label === 'Configure Markup') onEditMarkup(entity);
-      if (label === 'Assign Sales Rep') onAssignRep(entity);
-      if (label === 'View Operations') onViewOps(entity);
-  };
-
-  const menuItems = [
-    { label: 'View Operations', icon: Eye, color: 'text-indigo-600' },
-    { label: 'Edit Profile', icon: Pencil, color: 'text-emerald-600' },
-    { label: 'Configure Markup', icon: Settings, color: 'text-orange-500', buyerOnly: true },
-    { label: 'Assign Sales Rep', icon: UserPlus, color: 'text-slate-500', border: true, buyerOnly: true },
-    { label: 'Assign Accounts Rep', icon: FileText, color: 'text-slate-500', buyerOnly: true },
-  ];
-
-  return (
-    <div className="relative" ref={dropdownRef}>
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className={`p-3 rounded-xl transition-all border ${isOpen ? 'bg-gray-100 border-gray-200 text-gray-900 shadow-inner' : 'bg-white border-transparent text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
-      >
-        <MoreVertical size={20}/>
-      </button>
-      
-      {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 z-[100] py-2 animate-in zoom-in-95 duration-150 origin-top-right">
-          {menuItems.map((item, idx) => (
-            <React.Fragment key={item.label}>
-              {item.border && <div className="h-px bg-gray-50 my-2 mx-4" />}
-              <button 
-                onClick={() => handleAction(item.label)}
-                className="w-full flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors group"
-              >
-                <div className={`${item.color} transition-transform group-hover:scale-110`}>
-                    <item.icon size={18} />
-                </div>
-                <span className="text-sm font-bold text-gray-700 tracking-tight">{item.label}</span>
-              </button>
-            </React.Fragment>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 };
 
 export const AdminDashboard: React.FC = () => {
@@ -416,29 +323,17 @@ export const AdminDashboard: React.FC = () => {
   const [pzReps, setPzReps] = useState<User[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [pendingCount, setPendingCount] = useState(0);
-
-  // New Management UI State
   const [roleFilter, setRoleFilter] = useState<RoleFilterType>('ALL');
-
-  // Drill-down UI State
-  const [expandedInvoiceId, setExpandedInvoiceId] = useState<string | null>(null);
 
   // Modal States
   const [editingMarkupCustomer, setEditingMarkupCustomer] = useState<Customer | null>(null);
   const [editingRepCustomer, setEditingRepCustomer] = useState<Customer | null>(null);
   const [viewingOpsCustomer, setViewingOpsCustomer] = useState<Customer | null>(null);
 
-  // Data for Drill Downs
-  const [drillDownList, setDrillDownList] = useState<Order[]>([]);
-  const [wholesalersList, setWholesalersList] = useState<User[]>([]);
-  const [revenueByEntity, setRevenueByEntity] = useState<any[]>([]);
-
   const loadStats = () => {
       const orders = mockService.getOrders('u1');
       const users = mockService.getAllUsers();
       const products = mockService.getAllProducts();
-      const reqs = mockService.getRegistrationRequests().filter(r => r.status === 'Pending');
       const customersList = mockService.getCustomers();
       const reps = mockService.getPzRepresentatives();
       
@@ -452,15 +347,6 @@ export const AdminDashboard: React.FC = () => {
       const totalGmv = orders.reduce((sum, o) => sum + o.totalAmount, 0);
       const wholesalers = users.filter(u => u.role === UserRole.WHOLESALER);
 
-      const revMap: Record<string, number> = {};
-      orders.forEach(o => {
-        revMap[o.buyerId] = (revMap[o.buyerId] || 0) + o.totalAmount;
-      });
-      const revByEntity = Object.entries(revMap).map(([id, amount]) => ({
-        entity: users.find(u => u.id === id)?.businessName || customersList.find(c => c.id === id)?.businessName || 'Guest User',
-        amount
-      })).sort((a, b) => b.amount - a.amount);
-
       let totalWaste = 0;
       let totalCo2 = 0;
       orders.forEach(order => {
@@ -471,7 +357,6 @@ export const AdminDashboard: React.FC = () => {
           });
       });
       
-      setPendingCount(reqs.length);
       setStats({
         gmv: totalGmv,
         ordersToday: todaysOrders.length,
@@ -480,8 +365,6 @@ export const AdminDashboard: React.FC = () => {
         co2Saved: totalCo2
       });
       setCustomers(customersList);
-      setWholesalersList(wholesalers);
-      setRevenueByEntity(revByEntity);
   };
 
   useEffect(() => {
@@ -490,44 +373,27 @@ export const AdminDashboard: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Aggregated Financials
   const financials = useMemo(() => {
     const map: Record<string, { orders: number, outstanding: number, ltv: number, profit: number }> = {};
-    
     allOrders.forEach(o => {
         if (!map[o.buyerId]) map[o.buyerId] = { orders: 0, outstanding: 0, ltv: 0, profit: 0 };
         const m = map[o.buyerId];
         m.orders += 1;
         m.ltv += o.totalAmount;
-        if (o.paymentStatus !== 'Paid') {
-            m.outstanding += o.totalAmount;
-        }
+        if (o.paymentStatus !== 'Paid') m.outstanding += o.totalAmount;
         const customer = customers.find(c => c.id === o.buyerId);
-        const markup = customer?.pzMarkup || 15; 
-        m.profit += o.totalAmount * (markup / 100);
+        m.profit += o.totalAmount * ((customer?.pzMarkup || 15) / 100);
     });
-
     return map;
   }, [allOrders, customers]);
 
-  // Combined Directory Logic
   const unifiedDirectory = useMemo(() => {
     return allUsers.map(u => {
         const custData = customers.find(c => c.id === u.id);
         const financialData = financials[u.id] || { orders: 0, outstanding: 0, ltv: 0, profit: 0 };
-        return {
-            ...u,
-            ...custData, // Merges connection status, markup, etc.
-            ...financialData,
-            name: u.name,
-            id: u.id,
-            role: u.role,
-            businessName: u.businessName
-        };
+        return { ...u, ...custData, ...financialData, businessName: u.businessName || u.name };
     }).filter(e => {
-        const matchesSearch = e.businessName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            e.name.toLowerCase().includes(searchTerm.toLowerCase());
-        
+        const matchesSearch = e.businessName.toLowerCase().includes(searchTerm.toLowerCase());
         if (roleFilter === 'BUYER') return matchesSearch && (e.role === UserRole.CONSUMER || e.role === UserRole.GROCERY);
         if (roleFilter === 'SUPPLIER') return matchesSearch && (e.role === UserRole.WHOLESALER || e.role === UserRole.FARMER);
         if (roleFilter === 'STAFF') return matchesSearch && (e.role === UserRole.ADMIN || e.role === UserRole.PZ_REP);
@@ -536,125 +402,66 @@ export const AdminDashboard: React.FC = () => {
   }, [allUsers, customers, financials, searchTerm, roleFilter]);
 
   const handleKpiClick = (id: string) => {
-    setDrillDownCustomerId(null);
-    setExpandedInvoiceId(null);
-    if (id === 'IMPACT') {
-      navigate('/impact');
-    } else {
-        if (id === 'ORDERS') setDrillDownList(allOrders.filter(o => new Date(o.date).toDateString() === new Date().toDateString()));
-        setActiveDrillDown(id as DrillDownType);
-    }
-  };
-
-  const handleCustomerLedgerDrillDown = (customerId: string) => {
-    setDrillDownCustomerId(customerId);
-    setExpandedInvoiceId(null);
-    setDrillDownList(allOrders.filter(o => o.buyerId === customerId && o.paymentStatus !== 'Paid'));
-    setActiveDrillDown('LEDGER');
+    if (id === 'IMPACT') navigate('/impact');
+    else setActiveDrillDown(id as DrillDownType);
   };
 
   return (
     <div className="space-y-10 animate-in fade-in duration-500 pb-20">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight uppercase leading-none">HQ Control Center</h1>
-          <p className="text-gray-500 font-medium mt-2">Overseeing marketplace growth and partner relationships.</p>
-        </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-            <button 
-                onClick={() => navigate('/login-requests')} 
-                className="relative flex-1 sm:flex-none px-6 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 font-black text-[10px] uppercase tracking-widest shadow-sm hover:shadow-md transition-all active:scale-95 group"
-            >
-                Review Requests
-                {pendingCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[9px] font-black w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounce border-2 border-white ring-4 ring-red-500/10">
-                        {pendingCount}
-                    </span>
-                )}
-            </button>
-            <button 
-                onClick={() => navigate('/negotiations')} 
-                className="flex-1 sm:flex-none px-6 py-3 bg-[#043003] text-white rounded-xl font-black text-[10px] uppercase tracking-[0.2em] shadow-lg hover:bg-black transition-all active:scale-95"
-            >
-                View Pipeline
-            </button>
+          <h1 className="text-3xl font-black text-black tracking-tight uppercase leading-none">HQ Control Center</h1>
+          <p className="text-black font-black text-xs mt-2 uppercase tracking-widest">Marketplace Oversight Protocol</p>
         </div>
       </div>
 
-      {/* KPI METRICS - Updated for 2 columns on mobile */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+      {/* KPI METRICS - FORCED BLACK TEXT */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         {[
-            { id: 'ORDERS', label: 'Orders Today', value: stats.ordersToday, icon: Activity, color: 'text-blue-600', bg: 'bg-blue-50', live: true, desc: 'Incoming live volume' },
-            { id: 'WHOLESALERS', label: 'Live Wholesalers', value: stats.wholesalers, icon: Globe, color: 'text-indigo-600', bg: 'bg-indigo-50', live: true, desc: 'Active network nodes' },
-            { id: 'REVENUE', label: 'Market Revenue', value: `$${stats.gmv >= 1000 ? (stats.gmv / 1000).toFixed(1) + 'k' : stats.gmv.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50', desc: 'Total platform GMV' },
-            { id: 'IMPACT', label: 'Eco Impact', value: `${stats.wasteDiverted >= 1000 ? (stats.wasteDiverted / 1000).toFixed(1) + 'k' : stats.wasteDiverted.toLocaleString()}kg`, icon: Leaf, color: 'text-emerald-500', bg: 'bg-emerald-50', live: true, desc: 'Waste diverted to buyers' }
+            { id: 'ORDERS', label: 'Orders Today', value: stats.ordersToday, icon: Activity, color: 'text-black', bg: 'bg-blue-100', desc: 'LIVE VOLUME' },
+            { id: 'WHOLESALERS', label: 'Network Nodes', value: stats.wholesalers, icon: Globe, color: 'text-black', bg: 'bg-indigo-100', desc: 'ACTIVE PARTNERS' },
+            { id: 'REVENUE', label: 'Market GMV', value: `$${stats.gmv.toLocaleString()}`, icon: DollarSign, color: 'text-black', bg: 'bg-emerald-100', desc: 'PLATFORM REVENUE' },
+            { id: 'IMPACT', label: 'Eco Recovery', value: `${stats.wasteDiverted}kg`, icon: Leaf, color: 'text-black', bg: 'bg-emerald-100', desc: 'LANDFILL BYPASS' }
         ].map((kpi, idx) => (
             <button 
               key={idx} 
               onClick={() => handleKpiClick(kpi.id)}
-              className={`text-left bg-white p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-sm border flex flex-col justify-between group hover:shadow-xl transition-all relative overflow-hidden active:scale-[0.98] ${activeDrillDown === kpi.id && !drillDownCustomerId ? 'border-indigo-400 ring-2 ring-indigo-50 shadow-lg' : 'border-gray-100'}`}
+              className="text-left bg-white p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-200 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all relative overflow-hidden active:scale-[0.98]"
             >
-                {kpi.live && (
-                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex items-center gap-1.5">
-                        <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-emerald-500"></span>
-                        </span>
-                        <span className="text-[7px] sm:text-[8px] font-black text-emerald-600 uppercase tracking-widest">Live</span>
-                    </div>
-                )}
                 <div>
-                    <p className="text-[8px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-0.5 sm:mb-1">{kpi.label}</p>
-                    <p className="text-[7px] sm:text-[9px] font-bold text-gray-300 uppercase tracking-tight mb-4 sm:mb-6 hidden xs:block">{kpi.desc}</p>
+                    <p className="text-[10px] md:text-xs font-black text-black uppercase tracking-[0.2em] mb-1">{kpi.label}</p>
+                    <p className="text-[8px] md:text-[9px] font-black text-black opacity-40 uppercase tracking-widest mb-4">{kpi.desc}</p>
                 </div>
                 <div className="flex justify-between items-end">
-                    <h3 className="text-xl sm:text-3xl font-black text-gray-900 tracking-tighter">{kpi.value}</h3>
-                    <div className={`p-2 sm:p-3 ${kpi.bg} ${kpi.color} rounded-xl group-hover:scale-110 transition-transform shadow-inner-sm border border-white/50`}><kpi.icon size={16} className="sm:w-6 sm:h-6" /></div>
+                    <h3 className="text-2xl md:text-4xl font-black text-black tracking-tighter">{kpi.value}</h3>
+                    <div className={`p-2.5 ${kpi.bg} ${kpi.color} rounded-2xl group-hover:scale-110 transition-transform shadow-inner-sm border border-white/50`}><kpi.icon size={22} strokeWidth={3} /></div>
                 </div>
             </button>
         ))}
       </div>
 
-      {/* MARKETPLACE MANAGEMENT - UNIFIED DIRECTORY */}
-      <div className="bg-white border border-gray-200 rounded-[2.5rem] shadow-sm overflow-visible">
-        <div className="p-10 border-b border-gray-100 flex flex-col xl:flex-row justify-between items-center gap-8 bg-gray-50/20">
+      {/* DIRECTORY - FORCED BLACK TEXT */}
+      <div className="bg-white border-2 border-gray-100 rounded-[2.5rem] shadow-sm overflow-hidden">
+        <div className="p-8 border-b-2 border-gray-100 bg-gray-50 flex flex-col xl:flex-row justify-between items-center gap-8">
             <div className="flex items-center gap-5">
-                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-gray-900 shadow-md border border-gray-100 shrink-0">
-                    <Store size={32}/>
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-black shadow-md border border-gray-200 shrink-0">
+                    <Store size={32} strokeWidth={3}/>
                 </div>
                 <div>
-                    <h2 className="text-2xl font-black text-gray-900 tracking-tight uppercase leading-none">Global Marketplace Management</h2>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2">Overseeing {allUsers.length} total system participants</p>
+                    <h2 className="text-2xl font-black text-black tracking-tight uppercase leading-none">Global Registry</h2>
+                    <p className="text-[10px] text-black font-black uppercase tracking-widest mt-2">Managing {allUsers.length} platform nodes</p>
                 </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
-                {/* ROLE TABS */}
-                <div className="bg-gray-100 p-1 rounded-2xl flex gap-1 shadow-inner-sm w-full sm:w-auto overflow-x-auto no-scrollbar">
-                    {[
-                        { id: 'ALL', label: 'All Users', icon: Users },
-                        { id: 'BUYER', label: 'Buyers', icon: ShoppingCart },
-                        { id: 'SUPPLIER', label: 'Suppliers', icon: Sprout },
-                        { id: 'STAFF', label: 'HQ Staff', icon: UserCog }
-                    ].map((tab) => (
-                        <button 
-                            key={tab.id}
-                            onClick={() => setRoleFilter(tab.id as RoleFilterType)}
-                            className={`flex-1 sm:flex-none px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 whitespace-nowrap ${roleFilter === tab.id ? 'bg-white text-gray-900 shadow-sm ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600'}`}
-                        >
-                            <tab.icon size={14}/> {tab.label}
-                        </button>
-                    ))}
-                </div>
-
                 <div className="relative w-full sm:w-80 group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-indigo-600 transition-colors" size={20} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black group-focus-within:text-indigo-600 transition-colors" size={20} />
                     <input 
                         type="text" 
-                        placeholder="Search network registry..." 
+                        placeholder="Search registry..." 
                         value={searchTerm} 
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-6 py-4 bg-white border border-gray-200 rounded-[1.25rem] text-sm font-bold text-slate-900 focus:ring-8 focus:ring-indigo-50/50 outline-none transition-all shadow-sm" 
+                        className="w-full pl-12 pr-6 py-4 bg-white border-2 border-gray-200 rounded-[1.25rem] text-sm font-black text-black focus:ring-4 focus:ring-indigo-50 outline-none transition-all shadow-sm" 
                     />
                 </div>
             </div>
@@ -662,164 +469,61 @@ export const AdminDashboard: React.FC = () => {
 
         <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
-                <thead className="bg-white border-b border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-[0.25em]">
+                <thead className="bg-white border-b-2 border-gray-100 text-[10px] font-black text-black uppercase tracking-[0.25em]">
                     <tr>
                         <th className="px-8 py-8 min-w-[220px]">Market Entity</th>
-                        <th className="px-8 py-8">Role / Type</th>
-                        <th className="px-8 py-8">Status</th>
-                        
-                        {/* Dynamic Columns based on filter */}
-                        {roleFilter === 'STAFF' ? (
-                            <>
-                                <th className="px-8 py-8 text-right">Commission</th>
-                                <th className="px-8 py-8 text-right">Assigned Accounts</th>
-                            </>
-                        ) : (
-                            <>
-                                <th className="px-8 py-8">Connected Supplier</th>
-                                <th className="px-8 py-8 text-right">PZ Markup</th>
-                                <th className="px-8 py-8 text-center">Orders</th>
-                                <th className="px-8 py-8 text-center">Outstanding</th>
-                                <th className="px-8 py-8 text-right">Lifetime Value</th>
-                                <th className="px-8 py-8 text-right text-emerald-600">Total Profit</th>
-                            </>
-                        )}
-                        
+                        <th className="px-8 py-8">Role</th>
+                        <th className="px-8 py-8">Connected Partner</th>
+                        <th className="px-8 py-8 text-right">PZ Margin</th>
+                        <th className="px-8 py-8 text-right">LTV</th>
+                        <th className="px-8 py-8 text-right text-emerald-700">Profit</th>
                         <th className="px-8 py-8 text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
-                    {unifiedDirectory.map(entity => {
-                        const isStaff = entity.role === UserRole.ADMIN || entity.role === UserRole.PZ_REP;
-                        const isLedgerActive = drillDownCustomerId === entity.id && activeDrillDown === 'LEDGER';
-                        
-                        return (
-                            <tr key={entity.id} className="hover:bg-gray-50/50 transition-colors group cursor-pointer" onClick={() => !isStaff && setViewingOpsCustomer(entity as any)}>
-                                <td className="px-8 py-7">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg shadow-inner-sm border ${
-                                            isStaff ? 'bg-slate-100 text-slate-500' : 
-                                            (entity.role === UserRole.FARMER || entity.role === UserRole.WHOLESALER) ? 'bg-emerald-50 text-emerald-700' : 'bg-indigo-50 text-indigo-700'
-                                        }`}>
-                                            {entity.businessName?.charAt(0) || entity.name.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <div className="font-black text-gray-900 text-base uppercase tracking-tight leading-none mb-1.5 group-hover:text-indigo-600 transition-colors">{entity.businessName || entity.name}</div>
-                                            <div className="text-[9px] text-gray-400 font-black uppercase tracking-widest">{entity.email}</div>
-                                        </div>
+                <tbody className="divide-y-2 divide-gray-50">
+                    {unifiedDirectory.map(entity => (
+                        <tr key={entity.id} className="hover:bg-gray-50 transition-colors group cursor-pointer" onClick={() => setViewingOpsCustomer(entity as any)}>
+                            <td className="px-8 py-7">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg bg-gray-100 text-black border-2 border-gray-200">
+                                        {entity.businessName.charAt(0)}
                                     </div>
-                                </td>
-                                <td className="px-8 py-7">
-                                    <span className={`inline-flex items-center px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border border-gray-100 ${
-                                        isStaff ? 'bg-slate-100 text-slate-500' : 'bg-gray-100 text-gray-400'
-                                    }`}>
-                                        {entity.role}
-                                    </span>
-                                </td>
-                                <td className="px-8 py-7">
-                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm ${
-                                        entity.connectionStatus === 'Active' || entity.isConfirmed
-                                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
-                                        : 'bg-orange-50 text-orange-600 border-orange-100'
-                                    }`}>
-                                        {(entity.connectionStatus || 'VERIFIED').toUpperCase()}
-                                    </span>
-                                </td>
-
-                                {isStaff ? (
-                                    <>
-                                        <td className="px-8 py-7 text-right font-black text-gray-900">{entity.commissionRate || 5}%</td>
-                                        <td className="px-8 py-7 text-right">
-                                            <span className="font-black text-indigo-600">{mockService.getRepCustomers(entity.id).length} Active</span>
-                                        </td>
-                                    </>
-                                ) : (
-                                    <>
-                                        <td className="px-8 py-7">
-                                            <div className="font-black text-gray-900 text-sm uppercase tracking-tight truncate max-w-[140px]">{entity.connectedSupplierName || (entity.role === UserRole.FARMER ? 'Primary Producer' : 'Direct Connection')}</div>
-                                        </td>
-                                        <td className="px-8 py-7 text-right">
-                                            <button 
-                                                onClick={(e) => { e.stopPropagation(); setEditingMarkupCustomer(entity as any); }}
-                                                className="inline-flex items-center gap-1 font-black text-gray-900 text-sm hover:text-indigo-600 hover:scale-110 transition-all bg-gray-50 px-3 py-1.5 rounded-xl border border-transparent hover:border-indigo-100 shadow-inner-sm"
-                                            >
-                                                {entity.pzMarkup || 15}<span className="text-[10px] text-gray-400">%</span>
-                                            </button>
-                                        </td>
-                                        <td className="px-8 py-7 text-center">
-                                            <button 
-                                                onClick={(e) => { e.stopPropagation(); setViewingOpsCustomer(entity as any); }}
-                                                className="px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white"
-                                            >
-                                                {entity.orders} Total
-                                            </button>
-                                        </td>
-                                        <td className="px-8 py-7 text-center">
-                                            <button 
-                                                onClick={(e) => { e.stopPropagation(); handleCustomerLedgerDrillDown(entity.id); }}
-                                                disabled={entity.outstanding === 0}
-                                                className={`px-6 py-2.5 rounded-full font-black text-sm tracking-tight transition-all border-2 ${
-                                                    entity.outstanding > 0 
-                                                    ? isLedgerActive
-                                                        ? 'bg-[#FFF1F2] text-[#E11D48] border-[#3B82F6] shadow-md scale-105'
-                                                        : 'bg-[#FFF1F2] text-[#E11D48] border-transparent hover:border-[#3B82F6] shadow-sm' 
-                                                    : 'bg-gray-50 text-gray-300 cursor-not-allowed border-transparent opacity-50'
-                                                }`}
-                                            >
-                                                ${entity.outstanding.toFixed(2)}
-                                            </button>
-                                        </td>
-                                        <td className="px-8 py-7 text-right">
-                                            <div className="font-black text-gray-900 text-base tracking-tighter">${entity.ltv.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
-                                        </td>
-                                        <td className="px-8 py-7 text-right">
-                                            <div className="font-black text-emerald-600 text-base tracking-tighter">${entity.profit.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
-                                        </td>
-                                    </>
-                                )}
-
-                                <td className="px-8 py-7 text-right">
-                                    <ActionDropdown 
-                                        entity={entity} 
-                                        onEditMarkup={setEditingMarkupCustomer} 
-                                        onAssignRep={setEditingRepCustomer}
-                                        onViewOps={setViewingOpsCustomer}
-                                    />
-                                </td>
-                            </tr>
-                        );
-                    })}
+                                    <div>
+                                        <div className="font-black text-black text-base uppercase tracking-tight leading-none group-hover:text-indigo-700 transition-colors">{entity.businessName}</div>
+                                        <div className="text-[9px] text-black font-black uppercase tracking-widest mt-1.5 opacity-50">{entity.email}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td className="px-8 py-7">
+                                <span className="inline-flex items-center px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest bg-black text-white border border-black">{entity.role}</span>
+                            </td>
+                            <td className="px-8 py-7">
+                                <div className="font-black text-black text-sm uppercase tracking-tight truncate max-w-[140px]">{entity.connectedSupplierName || 'NETWORK SOURCE'}</div>
+                            </td>
+                            <td className="px-8 py-7 text-right">
+                                <button className="font-black text-black text-base px-3 py-1.5 rounded-xl border-2 border-gray-200 hover:border-black transition-all">
+                                    {entity.pzMarkup || 15}%
+                                </button>
+                            </td>
+                            <td className="px-8 py-7 text-right">
+                                <div className="font-black text-black text-base tracking-tighter">${entity.ltv.toLocaleString()}</div>
+                            </td>
+                            <td className="px-8 py-7 text-right">
+                                <div className="font-black text-emerald-700 text-base tracking-tighter">${entity.profit.toFixed(0)}</div>
+                            </td>
+                            <td className="px-8 py-7 text-right">
+                                <button className="p-3 bg-white border-2 border-gray-200 text-black hover:border-black rounded-xl transition-all"><ChevronRight size={18}/></button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
       </div>
 
-      {/* MODALS RENDERED BELOW */}
-      <MarkupEditorModal 
-        isOpen={!!editingMarkupCustomer} 
-        onClose={() => setEditingMarkupCustomer(null)}
-        customer={editingMarkupCustomer}
-        onUpdate={loadStats}
-      />
-      <RepAssignmentModal 
-        isOpen={!!editingRepCustomer}
-        onClose={() => setEditingRepCustomer(null)}
-        customer={editingRepCustomer}
-        reps={pzReps}
-        onUpdate={loadStats}
-      />
-      <CustomerOpsModal 
-        isOpen={!!viewingOpsCustomer}
-        onClose={() => setViewingOpsCustomer(null)}
-        customer={viewingOpsCustomer}
-        allOrders={allOrders}
-        products={allProducts}
-        allUsers={allUsers}
-      />
+      <MarkupEditorModal isOpen={!!editingMarkupCustomer} onClose={() => setEditingMarkupCustomer(null)} customer={editingMarkupCustomer} onUpdate={loadStats} />
+      <RepAssignmentModal isOpen={!!editingRepCustomer} onClose={() => setEditingRepCustomer(null)} customer={editingRepCustomer} reps={pzReps} onUpdate={loadStats} />
+      <CustomerOpsModal isOpen={!!viewingOpsCustomer} onClose={() => setViewingOpsCustomer(null)} customer={viewingOpsCustomer} allOrders={allOrders} products={allProducts} allUsers={allUsers} />
     </div>
   );
 };
-
-const Info = ({ size = 24, ...props }: any) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-);
